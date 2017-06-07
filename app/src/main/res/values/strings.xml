@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">名单</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+
+    <string name="incomplete">未完成</string>
+    <string name="finished">已完成</string>
+    <string name="ok">好</string>
+    <string name="cancel">取消</string>
+
+    <string name="des_add_img">添加</string>
+    <string name="title_no_roster">未检测到名单</string>
+    <string name="message_import_roster">导入名单</string>
+
+
+</resources>
