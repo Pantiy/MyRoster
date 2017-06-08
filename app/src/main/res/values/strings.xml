@@ -12,6 +12,9 @@
     <string name="des_add_img">添加</string>
     <string name="title_no_roster">未检测到名单</string>
     <string name="message_import_roster">导入名单</string>
-
+    <string name="add_affair">添加事务</string>
+    <string name="re_import_roster">重新导入名单</string>
+    <string name="empty">空</string>
+    <string name="input_affair_name">输入事务名称</string>
 
 </resources>
