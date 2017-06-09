@@ -13,12 +13,16 @@ public final class AffairDatabase {
 
     public static String getSql() {
         return "create table " + NAME + "(" +
+                Table.ID + "," +
                 Table.AFFAIR_NAME + "," +
-                Table.STATE_ARRAY + ")";
+                Table.STATE_ARRAY + "," +
+                Table.IS_FINISH + ")";
     }
 
     public static final class Table {
+        public static final String ID = "id";
         public static final String AFFAIR_NAME = "affair_name";
         public static final String STATE_ARRAY = "state_array";
+        public static final String IS_FINISH = "is_finish";
     }
 }

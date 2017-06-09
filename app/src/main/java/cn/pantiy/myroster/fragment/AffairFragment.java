@@ -17,15 +17,12 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
-import cn.pantiy.myroster.MyApplication;
 import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.adapter.AffairAdapter;
-import cn.pantiy.myroster.adapter.AffairDetailAdapter;
+import cn.pantiy.myroster.global.MyApplication;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
 import cn.pantiy.myroster.model.ClassmateInfo;
@@ -37,28 +34,29 @@ import jxl.read.biff.BiffException;
 /**
  * MyRoster
  * cn.pantiy.myroster.fragment
- * Created by pantiy on 17-6-4.
+ * Created by pantiy on 17-6-9.
  * Copyright © 2017 All rights Reserved by Pantiy
  */
 
-public class IncompleteFragment extends BaseFragment {
+public abstract class AffairFragment extends BaseFragment {
 
-    private static final String TAG = "IncompleteFragment";
+    private static final String TAG = "AffairFragment";
     private static final String CREATE_AFFAIR_NAME_DIALOG = "createAffairDialogFragment";
 
     private static final int REQUEST_AFFAIR_NAME = -1;
     private static final int REQUEST_CHOOSE_EXCEL = 0;
 
     private static final String ROSTER_IMPORT_KEY = "rosterImport";
-    private static final String HAVE_INCOMPLETE_KEY = "emptyIncompleteList";
 
     private static boolean sRosterImport;
-    private static boolean sHaveIncomplete;
 
-    private TextView mEmptyTv;
-    private ListView mIncompleteLv;
+    protected boolean mIsFinish;
 
-    private AffairAdapter mAffairAdapter;
+    protected TextView mEmptyTv;
+    protected ListView mAffairLv;
+    protected AffairAdapter mAffairAdapter;
+
+    protected abstract boolean setFinish();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,8 +65,8 @@ public class IncompleteFragment extends BaseFragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -86,7 +84,7 @@ public class IncompleteFragment extends BaseFragment {
                 if (!sRosterImport) {
                     importRoster();
                 } else {
-                    add();
+                    createDialog();
                 }
                 return true;
 
@@ -97,40 +95,6 @@ public class IncompleteFragment extends BaseFragment {
             default:
                 return super.onOptionsItemSelected(item);
         }
-
-    }
-
-    @Override
-    protected void initData() {
-        sRosterImport = SharedPreferencesUtil.getBoolean(ROSTER_IMPORT_KEY);
-        sHaveIncomplete = SharedPreferencesUtil.getBoolean(HAVE_INCOMPLETE_KEY);
-    }
-
-    @Override
-    protected void initViews(View view) {
-
-        mEmptyTv = (TextView) view.findViewById(R.id.empty_tv);
-        mIncompleteLv = (ListView) view.findViewById(R.id.incomplete_lv);
-
-        if (!sHaveIncomplete) {
-            mEmptyTv.setVisibility(View.VISIBLE);
-        } else {
-            mIncompleteLv.setVisibility(View.VISIBLE);
-            Affair affair = AffairLab.touch(mContext).getAffairList().get(0);
-            AffairDetailAdapter adapter = new AffairDetailAdapter(mContext, affair);
-            mIncompleteLv.setAdapter(adapter);
-        }
-    }
-
-    @Override
-    protected void setupAdapter() {
-        mAffairAdapter = new AffairAdapter(mContext);
-        mIncompleteLv.setAdapter(mAffairAdapter);
-    }
-
-    @Override
-    protected void setupListener() {
-
     }
 
     @Override
@@ -146,19 +110,69 @@ public class IncompleteFragment extends BaseFragment {
                     excelAsyncTask.execute(uri.getPath());
                 } else {
                     Log.i(TAG, "resultCode " + resultCode);
-                    Toast.makeText(mContext, "导入失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, R.string.import_failed, Toast.LENGTH_SHORT).show();
                 }
                 break;
             case REQUEST_AFFAIR_NAME:
                 if (resultCode == Activity.RESULT_OK) {
-                    addAffair(data.getStringExtra(CreateAffairDialogFragment.EXTRA_AFFAIR_NAME));
-                    refresh();
+                    createAffair(data.getStringExtra(CreateAffairDialogFragment.EXTRA_AFFAIR_NAME));
+                    updateAffairList();
                 }
                 break;
         }
     }
 
-    private void add() {
+    @Override
+    protected void initData() {
+        sRosterImport = SharedPreferencesUtil.getBoolean(ROSTER_IMPORT_KEY);
+        mIsFinish = setFinish();
+    }
+
+    @Override
+    protected void initViews(View view) {
+        mEmptyTv = (TextView) view.findViewById(R.id.empty_tv);
+        mAffairLv = (ListView) view.findViewById(R.id.affair_lv);
+        checkEmptyAffairList();
+    }
+
+    @Override
+    protected void setupAdapter() {
+        mAffairAdapter = new AffairAdapter(mContext, mIsFinish);
+        mAffairLv.setAdapter(mAffairAdapter);
+    }
+
+    @Override
+    protected void setupListener() {
+        mAffairAdapter.setOnAffairListChangeListener(new AffairAdapter.OnAffairListChangeListener() {
+            @Override
+            public void onAffairListChanged() {
+                FinishedAffairFragment.newInstance().updateAffairList();
+                IncompleteAffairFragment.newInstance().updateAffairList();
+            }
+        });
+    }
+
+    protected void updateAffairList() {
+        mAffairAdapter.setAffairList(getAffairList());
+        mAffairAdapter.notifyDataSetChanged();
+        checkEmptyAffairList();
+    }
+
+    private void checkEmptyAffairList() {
+        if (getAffairList().size() != 0) {
+            mEmptyTv.setVisibility(View.GONE);
+            mAffairLv.setVisibility(View.VISIBLE);
+        } else {
+            mEmptyTv.setVisibility(View.VISIBLE);
+            mAffairLv.setVisibility(View.GONE);
+        }
+    }
+
+    private List<Affair> getAffairList() {
+        return AffairLab.touch(mContext).getAffairList(mIsFinish);
+    }
+
+    private void createDialog() {
         FragmentManager fragmentManager = getFragmentManager();
         CreateAffairDialogFragment createAffairDialogFragment =
                 new CreateAffairDialogFragment();
@@ -166,21 +180,13 @@ public class IncompleteFragment extends BaseFragment {
         createAffairDialogFragment.show(fragmentManager, CREATE_AFFAIR_NAME_DIALOG);
     }
 
-    private void refresh() {
-        mAffairAdapter.setAffairList(AffairLab.touch(mContext).getAffairList());
-        mAffairAdapter.notifyDataSetChanged();
-        checkViews();
-    }
-
-    private void addAffair(String affairName) {
-        Affair affair = new Affair(affairName,
-                ClassmateInfoLab.touch(mContext).getClassmateInfoList());
+    private void createAffair(String affairName) {
+        Affair affair = new Affair(affairName);
         AffairLab.touch(mContext).addAffair(affair);
     }
 
     private void importRoster() {
         AlertDialog dialog = new AlertDialog.Builder(mContext)
-                .setTitle(R.string.title_no_roster)
                 .setMessage(R.string.message_import_roster)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -193,38 +199,6 @@ public class IncompleteFragment extends BaseFragment {
         dialog.show();
     }
 
-    private void checkViews() {
-        if (mAffairAdapter.getAffairList() == null && sHaveIncomplete) {
-            sHaveIncomplete = SharedPreferencesUtil.putBoolean(HAVE_INCOMPLETE_KEY, false);
-            setVisibility();
-        } else if (mAffairAdapter.getAffairList() != null && !sHaveIncomplete){
-            sHaveIncomplete = SharedPreferencesUtil.putBoolean(HAVE_INCOMPLETE_KEY, true);
-            setVisibility();
-        }
-    }
-
-    private void setVisibility() {
-        if (sHaveIncomplete) {
-            mEmptyTv.setVisibility(View.GONE);
-            mIncompleteLv.setVisibility(View.VISIBLE);
-        } else {
-            mEmptyTv.setVisibility(View.VISIBLE);
-            mIncompleteLv.setVisibility(View.GONE);
-        }
-    }
-
-    private void test() {
-        Affair affair = new Affair("test",
-                ClassmateInfoLab.touch(mContext).getClassmateInfoList());
-        AffairLab.touch(mContext).addAffair(affair);
-        AffairDetailAdapter adapter = new AffairDetailAdapter(mContext,
-                affair);
-        mIncompleteLv.setAdapter(adapter);
-        mEmptyTv.setVisibility(View.GONE);
-        mIncompleteLv.setVisibility(View.VISIBLE);
-        sHaveIncomplete = SharedPreferencesUtil.putBoolean(HAVE_INCOMPLETE_KEY, true);
-    }
-
     private void chooseExcelFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
@@ -232,13 +206,13 @@ public class IncompleteFragment extends BaseFragment {
         try {
             startActivityForResult(intent, REQUEST_CHOOSE_EXCEL);
         } catch (android.content.ActivityNotFoundException ane) {
-            Toast.makeText(mContext, "请安装文件管理类App", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, R.string.install_file_manager, Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     protected int setLayoutRes() {
-        return R.layout.fragment_incomplete;
+        return R.layout.fragment_affair;
     }
 
     private static class ImportExcelAsyncTask extends AsyncTask<String, Void, List<ClassmateInfo>> {
@@ -257,8 +231,12 @@ public class IncompleteFragment extends BaseFragment {
                 return mClassmateInfoLab.getClassmateInfoList();
             } catch (IOException ioe) {
                 Log.e(TAG, "error", ioe);
+                Toast.makeText(MyApplication.getContext(), R.string.import_failed_check_permisson,
+                        Toast.LENGTH_SHORT).show();
             } catch (BiffException be) {
                 Log.e(TAG, "error", be);
+                Toast.makeText(MyApplication.getContext(), R.string.import_failed_check_permisson,
+                        Toast.LENGTH_SHORT).show();
             }
             return null;
         }
@@ -267,7 +245,8 @@ public class IncompleteFragment extends BaseFragment {
         protected void onPostExecute(List<ClassmateInfo> strings) {
             super.onPostExecute(strings);
             if (strings != null) {
-                Toast.makeText(MyApplication.getContext(), "已导入", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyApplication.getContext(), R.string.import_success,
+                        Toast.LENGTH_SHORT).show();
                 sRosterImport = SharedPreferencesUtil.putBoolean(ROSTER_IMPORT_KEY, true);
                 Log.i(TAG, "roster import: " + SharedPreferencesUtil.getBoolean(ROSTER_IMPORT_KEY));
             }

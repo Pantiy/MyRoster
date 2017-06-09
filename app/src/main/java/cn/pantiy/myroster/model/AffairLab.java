@@ -38,16 +38,28 @@ public class AffairLab {
         mSQLiteDatabase = new AffairDatabaseHelper(context).getWritableDatabase();
     }
 
+    public List<Affair> getAffairList(boolean isFinish) {
+        List<Affair> affairList = getAffairList();
+        List<Affair> affairs = new ArrayList<>();
+        for (int i = 0; i < affairList.size(); i++) {
+            Affair affair = affairList.get(i);
+            if (affair.isFinish() == isFinish) {
+                affairs.add(affair);
+            }
+        }
+        return affairs;
+    }
+
     public List<Affair> getAffairList() {
         List<Affair> affairList = new ArrayList<>();
         AffairCursorWrapper cursorWrapper = getCursorWrapper();
         if (cursorWrapper.getCount() == 0) {
             return affairList;
         }
-        cursorWrapper.moveToFirst();
-        while (!cursorWrapper.isAfterLast()) {
+        cursorWrapper.moveToLast();
+        while (!cursorWrapper.isBeforeFirst()) {
             affairList.add(cursorWrapper.getAffair());
-            cursorWrapper.moveToNext();
+            cursorWrapper.moveToPrevious();
         }
         cursorWrapper.close();
         return affairList;
@@ -76,8 +88,10 @@ public class AffairLab {
 
     private ContentValues getContentValues(Affair affair) {
         ContentValues contentValues = new ContentValues();
+        contentValues.put(Table.ID, affair.getId().toString());
         contentValues.put(Table.AFFAIR_NAME, affair.getAffairName());
         contentValues.put(Table.STATE_ARRAY, affair.stateArrayToString(affair.getStateArray()));
+        contentValues.put(Table.IS_FINISH, affair.isFinish()? "1" : "0");
         return contentValues;
     }
 }

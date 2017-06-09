@@ -11,7 +11,7 @@
         android:visibility="gone"/>
 
     <ListView
-        android:id="@+id/incomplete_lv"
+        android:id="@+id/affair_lv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"/>

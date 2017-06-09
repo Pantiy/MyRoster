@@ -1,4 +1,4 @@
-package cn.pantiy.myroster;
+package cn.pantiy.myroster.global;
 
 import android.app.Application;
 import android.content.Context;

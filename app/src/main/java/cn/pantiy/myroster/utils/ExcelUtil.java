@@ -1,6 +1,7 @@
 package cn.pantiy.myroster.utils;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -8,6 +9,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pantiy.myroster.global.MyApplication;
+import cn.pantiy.myroster.R;
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
@@ -32,6 +35,7 @@ public class ExcelUtil {
 
         if (!Check.isExcelFile(file)) {
             Log.i(TAG, "is not excel file");
+            Toast.makeText(MyApplication.getContext(), R.string.error_not_excel, Toast.LENGTH_SHORT).show();
             return null;
         }
 
@@ -39,6 +43,7 @@ public class ExcelUtil {
 
         Sheet sheet = workbook.getSheet(0);
         if(sheet == null) {
+            Toast.makeText(MyApplication.getContext(), R.string.error_empty_excel, Toast.LENGTH_SHORT).show();
             return null;
         }
 

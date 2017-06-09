@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,9 +28,16 @@ public class AffairAdapter extends BaseAdapter {
 
     private Context mContext;
 
+    private OnAffairListChangeListener mOnAffairListChangeListener;
+
     public AffairAdapter(Context context) {
         mContext = context;
         mAffairList = AffairLab.touch(context).getAffairList();
+    }
+
+    public AffairAdapter(Context context, boolean isFinish) {
+        mContext = context;
+        mAffairList = AffairLab.touch(context).getAffairList(isFinish);
     }
 
     @Override
@@ -48,12 +57,21 @@ public class AffairAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_for_affair,
-                    parent,false);
-        }
+        convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_for_affair,
+                parent,false);
+        final Affair affair = mAffairList.get(position);
         TextView affairName = (TextView) convertView.findViewById(R.id.affairName_tv);
-        affairName.setText(mAffairList.get(position).getAffairName());
+        affairName.setText(affair.getAffairName());
+        CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.affairIsFinish_cb);
+        checkBox.setChecked(affair.isFinish());
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                affair.setFinish(isChecked);
+                AffairLab.touch(mContext).updateAffair(affair);
+                mOnAffairListChangeListener.onAffairListChanged();
+            }
+        });
         return convertView;
     }
 
@@ -63,5 +81,13 @@ public class AffairAdapter extends BaseAdapter {
 
     public void setAffairList(List<Affair> affairList) {
         mAffairList = affairList;
+    }
+
+    public void setOnAffairListChangeListener(OnAffairListChangeListener listener) {
+        mOnAffairListChangeListener = listener;
+    }
+
+    public interface OnAffairListChangeListener {
+        void onAffairListChanged();
     }
 }

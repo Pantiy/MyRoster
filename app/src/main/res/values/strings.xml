@@ -11,8 +11,14 @@
 
     <string name="des_add_img">添加</string>
     <string name="title_no_roster">未检测到名单</string>
-    <string name="message_import_roster">导入名单</string>
+    <string name="message_import_roster">未检测到名单，请导入</string>
     <string name="add_affair">添加事务</string>
+    <string name="install_file_manager">请安装文件管理类App</string>
+    <string name="import_success">导入成功</string>
+    <string name="import_failed">导入失败</string>
+    <string name="import_failed_check_permisson">导入失败，请检查权限</string>
+    <string name="error_not_excel">请选择xls格式的Excel文件</string>
+    <string name="error_empty_excel">Excel文件无内容</string>
     <string name="re_import_roster">重新导入名单</string>
     <string name="empty">空</string>
     <string name="input_affair_name">输入事务名称</string>

@@ -11,8 +11,8 @@ import java.util.List;
 import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.adapter.MainFragmentPagerAdapter;
 import cn.pantiy.myroster.fragment.BaseFragment;
-import cn.pantiy.myroster.fragment.FinishedFragment;
-import cn.pantiy.myroster.fragment.IncompleteFragment;
+import cn.pantiy.myroster.fragment.FinishedAffairFragment;
+import cn.pantiy.myroster.fragment.IncompleteAffairFragment;
 import cn.pantiy.myroster.model.ClassmateInfo;
 
 /**
@@ -41,10 +41,10 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initData() {
         mFragmentList = new ArrayList<>();
-        IncompleteFragment incompleteFragment = new IncompleteFragment();
-        mFragmentList.add(INCOMPLETE, incompleteFragment);
-        FinishedFragment finishedFragment = new FinishedFragment();
-        mFragmentList.add(FINISHED, finishedFragment);
+        IncompleteAffairFragment incompleteAffairFragment = IncompleteAffairFragment.newInstance();
+        mFragmentList.add(INCOMPLETE, incompleteAffairFragment);
+        FinishedAffairFragment finishedAffairFragment = FinishedAffairFragment.newInstance();
+        mFragmentList.add(FINISHED, finishedAffairFragment);
     }
 
     @Override

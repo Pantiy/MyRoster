@@ -3,9 +3,9 @@ package cn.pantiy.myroster.database.Affair;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
-import cn.pantiy.myroster.MyApplication;
+import java.util.UUID;
+
 import cn.pantiy.myroster.model.Affair;
-import cn.pantiy.myroster.model.ClassmateInfoLab;
 
 import static cn.pantiy.myroster.database.Affair.AffairDatabase.*;
 
@@ -24,17 +24,19 @@ public class AffairCursorWrapper extends CursorWrapper {
 
     public Affair getAffair() {
 
+        String id = getString(getColumnIndex(Table.ID));
         String affairName = getString(getColumnIndex(Table.AFFAIR_NAME));
         String stateArrayString = getString(getColumnIndex(Table.STATE_ARRAY));
+        String isFinish = getString(getColumnIndex(Table.IS_FINISH));
 
         boolean[] stateArray = new boolean[stateArrayString.length()];
         for (int i = 0; i < stateArray.length; i++) {
             stateArray[i] = stateArrayString.charAt(i) == '1';
         }
 
-        Affair affair = new Affair(affairName,
-                ClassmateInfoLab.touch(MyApplication.getContext()).getClassmateInfoList());
+        Affair affair = new Affair(UUID.fromString(id), affairName);
         affair.setStateArray(stateArray);
+        affair.setFinish(isFinish.equals("1"));
 
         return affair;
     }

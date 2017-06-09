@@ -1,6 +1,9 @@
 package cn.pantiy.myroster.model;
 
 import java.util.List;
+import java.util.UUID;
+
+import cn.pantiy.myroster.global.MyApplication;
 
 /**
  * MyRoster
@@ -11,17 +14,25 @@ import java.util.List;
 
 public class Affair {
 
+    private UUID mId;
     private String mAffairName;
     private List<ClassmateInfo> mClassmateInfoList;
     private boolean[] mStateArray;
+    private boolean mIsFinish;
 
-    public Affair(String affairName, List<ClassmateInfo> classmateInfoList) {
+    public Affair(String affairName) {
+        this(UUID.randomUUID(), affairName);
+    }
+
+    public Affair(UUID id, String affairName) {
+        mId = id;
         setAffairName(affairName);
-        setClassmateInfoList(classmateInfoList);
-        mStateArray = new boolean[classmateInfoList.size()];
+        setClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).getClassmateInfoList());
+        mStateArray = new boolean[getClassmateInfoList().size()];
         for (int i = 0; i < mStateArray.length; i++) {
             mStateArray[i] = false;
         }
+        mIsFinish = false;
     }
 
     public String getAffairName() {
@@ -62,5 +73,21 @@ public class Affair {
             stateArrayString += state? "1" : "0";
         }
         return stateArrayString;
+    }
+
+    public UUID getId() {
+        return mId;
+    }
+
+    public void setId(UUID id) {
+        mId = id;
+    }
+
+    public boolean isFinish() {
+        return mIsFinish;
+    }
+
+    public void setFinish(boolean finish) {
+        mIsFinish = finish;
     }
 }

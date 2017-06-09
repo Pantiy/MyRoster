@@ -3,7 +3,7 @@ package cn.pantiy.myroster.utils;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import cn.pantiy.myroster.MyApplication;
+import cn.pantiy.myroster.global.MyApplication;
 
 /**
  * MyRoster
