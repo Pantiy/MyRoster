@@ -29,13 +29,8 @@ public class AffairCursorWrapper extends CursorWrapper {
         String stateArrayString = getString(getColumnIndex(Table.STATE_ARRAY));
         String isFinish = getString(getColumnIndex(Table.IS_FINISH));
 
-        boolean[] stateArray = new boolean[stateArrayString.length()];
-        for (int i = 0; i < stateArray.length; i++) {
-            stateArray[i] = stateArrayString.charAt(i) == '1';
-        }
-
         Affair affair = new Affair(UUID.fromString(id), affairName);
-        affair.setStateArray(stateArray);
+        affair.setStateArray(affair.parseStateArrayString(stateArrayString));
         affair.setFinish(isFinish.equals("1"));
 
         return affair;

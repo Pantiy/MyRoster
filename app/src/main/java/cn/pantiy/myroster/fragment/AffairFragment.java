@@ -14,13 +14,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
+
 import cn.pantiy.myroster.R;
+import cn.pantiy.myroster.activity.AffairDetailActivity;
 import cn.pantiy.myroster.adapter.AffairAdapter;
 import cn.pantiy.myroster.global.MyApplication;
 import cn.pantiy.myroster.model.Affair;
@@ -116,7 +121,7 @@ public abstract class AffairFragment extends BaseFragment {
             case REQUEST_AFFAIR_NAME:
                 if (resultCode == Activity.RESULT_OK) {
                     createAffair(data.getStringExtra(CreateAffairDialogFragment.EXTRA_AFFAIR_NAME));
-                    updateAffairList();
+
                 }
                 break;
         }
@@ -150,6 +155,19 @@ public abstract class AffairFragment extends BaseFragment {
                 IncompleteAffairFragment.newInstance().updateAffairList();
             }
         });
+        mAffairLv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(TAG, "onItemClick()");
+                Affair affair = (Affair) mAffairAdapter.getItem(position);
+                skipToAffairDetail(mIsFinish, affair.getId());
+            }
+        });
+    }
+
+    private void skipToAffairDetail(boolean isFinish, UUID affairId) {
+        Intent intent = AffairDetailActivity.newInstance(mContext, affairId, mIsFinish);
+        startActivity(intent);
     }
 
     protected void updateAffairList() {
@@ -183,6 +201,7 @@ public abstract class AffairFragment extends BaseFragment {
     private void createAffair(String affairName) {
         Affair affair = new Affair(affairName);
         AffairLab.touch(mContext).addAffair(affair);
+        skipToAffairDetail(mIsFinish, affair.getId());
     }
 
     private void importRoster() {

@@ -1,9 +1,5 @@
 package cn.pantiy.myroster.fragment;
 
-import java.util.List;
-
-import cn.pantiy.myroster.model.Affair;
-
 /**
  * MyRoster
  * cn.pantiy.myroster.fragment

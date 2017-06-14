@@ -9,7 +9,7 @@
         android:id="@+id/inputAffairName_et"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="35dp"
         android:hint="@string/input_affair_name"/>
 
 </LinearLayout>

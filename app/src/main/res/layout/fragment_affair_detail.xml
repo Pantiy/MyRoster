@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:background="@drawable/radio_group_stroke"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/incomplete_radioBtn"
+            style="@style/RadioButtonOnlyShowText"
+            android:checked="true"
+            android:background="@drawable/incomplete_radio_button_selector"
+            android:text="@string/incomplete"/>
+
+        <RadioButton
+            android:id="@+id/finished_radioBtn"
+            style="@style/RadioButtonOnlyShowText"
+            android:background="@drawable/finished_radio_button_selector"
+            android:text="@string/finished"/>
+
+    </RadioGroup>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ListView
+            android:id="@+id/incomplete_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ListView
+            android:id="@+id/finished_lv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+</LinearLayout>

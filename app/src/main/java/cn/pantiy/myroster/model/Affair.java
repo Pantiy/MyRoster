@@ -90,4 +90,8 @@ public class Affair {
     public void setFinish(boolean finish) {
         mIsFinish = finish;
     }
+
+    public boolean equals(Affair affair) {
+        return this.getId().equals(affair.getId());
+    }
 }

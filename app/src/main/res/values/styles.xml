@@ -22,4 +22,12 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="RadioButtonOnlyShowText">
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">@color/radio_button_text_color_selector</item>
+    </style>
+
 </resources>

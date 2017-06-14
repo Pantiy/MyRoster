@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import cn.pantiy.myroster.database.Affair.AffairCursorWrapper;
 import cn.pantiy.myroster.database.Affair.AffairDatabase;
@@ -65,6 +66,20 @@ public class AffairLab {
         return affairList;
     }
 
+    public Affair getAffair(UUID affairId) {
+        AffairCursorWrapper cursorWrapper = queryAffair(Table.ID + "=?",
+                new String[] {affairId.toString()});
+        try {
+            if (cursorWrapper.getCount() == 0) {
+                return null;
+            }
+            cursorWrapper.moveToLast();
+            return cursorWrapper.getAffair();
+        } finally {
+            cursorWrapper.close();
+        }
+    }
+
     public void addAffair(Affair affair) {
         mSQLiteDatabase.insert(AffairDatabase.NAME, null, getContentValues(affair));
     }
@@ -72,6 +87,18 @@ public class AffairLab {
     public void updateAffair(Affair affair) {
         mSQLiteDatabase.update(AffairDatabase.NAME, getContentValues(affair),
                 Table.AFFAIR_NAME + "=?", new String[] {affair.getAffairName()});
+    }
+
+    private AffairCursorWrapper queryAffair(String selection, String[] selectionArgs) {
+        Cursor cursor = mSQLiteDatabase.query(
+                AffairDatabase.NAME,
+                null,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null);
+        return new AffairCursorWrapper(cursor);
     }
 
     private AffairCursorWrapper getCursorWrapper() {
