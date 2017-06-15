@@ -72,6 +72,7 @@ public abstract class AffairFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        updateAffairList();
     }
 
     @Override
@@ -161,6 +162,14 @@ public abstract class AffairFragment extends BaseFragment {
                 Log.i(TAG, "onItemClick()");
                 Affair affair = (Affair) mAffairAdapter.getItem(position);
                 skipToAffairDetail(mIsFinish, affair.getId());
+            }
+        });
+        mAffairLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AffairLab.touch(mContext).deleteAffair((Affair) mAffairAdapter.getItem(position));
+                updateAffairList();
+                return true;
             }
         });
     }

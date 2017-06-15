@@ -62,11 +62,12 @@ public class AffairAdapter extends BaseAdapter {
         final Affair affair = mAffairList.get(position);
         TextView affairName = (TextView) convertView.findViewById(R.id.affairName_tv);
         affairName.setText(affair.getAffairName());
-        CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.affairIsFinish_cb);
+        final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.affairIsFinish_cb);
         checkBox.setChecked(affair.isFinish());
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                checkBox.setClickable(false);
                 affair.setFinish(isChecked);
                 AffairLab.touch(mContext).updateAffair(affair);
                 mOnAffairListChangeListener.onAffairListChanged();

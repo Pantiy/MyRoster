@@ -89,6 +89,11 @@ public class AffairLab {
                 Table.AFFAIR_NAME + "=?", new String[] {affair.getAffairName()});
     }
 
+    public void deleteAffair(Affair affair) {
+        mSQLiteDatabase.delete(AffairDatabase.NAME, Table.ID + "=?",
+                new String[] {affair.getId().toString()});
+    }
+
     private AffairCursorWrapper queryAffair(String selection, String[] selectionArgs) {
         Cursor cursor = mSQLiteDatabase.query(
                 AffairDatabase.NAME,

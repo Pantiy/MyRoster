@@ -34,11 +34,7 @@ public class ClassmateInfo {
         mStudentNum = studentNum;
     }
 
-//    public boolean isFinish() {
-//        return mIsFinish;
-//    }
-//
-//    public void setFinish(boolean finish) {
-//        mIsFinish = finish;
-//    }
+    public boolean equals(ClassmateInfo classmateInfo) {
+        return this.getStudentNum().equals(classmateInfo.getStudentNum());
+    }
 }

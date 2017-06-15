@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:background="@drawable/radio_group_stroke"
         android:orientation="horizontal">
