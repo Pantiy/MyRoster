@@ -3,7 +3,7 @@ package cn.pantiy.myroster.adapter;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
 
@@ -16,14 +16,14 @@ import cn.pantiy.myroster.fragment.BaseFragment;
  * Copyright © 2017 All rights Reserved by Pantiy
  */
 
-public class MainFragmentPagerAdapter extends FragmentStatePagerAdapter {
+public class AffairFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private List<BaseFragment> mFragmentList;
 
     private Context mContext;
 
-    public MainFragmentPagerAdapter(Context context, FragmentManager fragmentManager,
-                                    List<BaseFragment> fragmentList) {
+    public AffairFragmentPagerAdapter(Context context, FragmentManager fragmentManager,
+                                      List<BaseFragment> fragmentList) {
         super(fragmentManager);
         mContext = context;
         mFragmentList = fragmentList;

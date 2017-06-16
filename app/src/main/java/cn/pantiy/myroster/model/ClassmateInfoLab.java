@@ -67,6 +67,10 @@ public class ClassmateInfoLab {
         saveClassmateInfoList(cleanEmptyInfo(classmateInfoList));
     }
 
+    public void deleteForm() {
+        mSQLiteDatabase.execSQL("DELETE FROM " + ClassmateInfoDatabase.NAME);
+    }
+
     private void saveClassmateInfoList(List<ClassmateInfo> classmateInfoList) {
         for (ClassmateInfo classmateInfo : classmateInfoList) {
             addClassmateInfo(getContentValues(classmateInfo));

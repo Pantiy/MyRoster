@@ -40,6 +40,8 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
     private AffairDetailAdapter mIncompleteAdapter;
     private AffairDetailAdapter mFinishedAdapter;
 
+    private OnAffairContentChangedCallback mCallback;
+
     public static AffairDetailFragment newInstance(UUID affairId) {
         AffairDetailFragment affairDetailFragment = new AffairDetailFragment();
         Bundle args = new Bundle();
@@ -52,6 +54,7 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
     protected void initData() {
         UUID affairId = (UUID) getArguments().getSerializable(KEY_AFFAIR_ID);
         mAffair = AffairLab.touch(mContext).getAffair(affairId);
+        mCallback = (OnAffairContentChangedCallback) getActivity();
     }
 
     @Override
@@ -154,5 +157,10 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
         } else {
             updateAdapterData(mIncompleteAdapter, classmateInfoList, stateArray);
         }
+        mCallback.onAffairContentChanged();
+    }
+
+    public interface OnAffairContentChangedCallback {
+        void onAffairContentChanged();
     }
 }

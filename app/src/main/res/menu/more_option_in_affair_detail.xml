@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/displaySubtitle"
+        android:title="@string/display_subtitle_count"/>
+
+    <item android:id="@+id/deleteAffair"
+          android:title="@string/delete_affair"/>
+
+</menu>

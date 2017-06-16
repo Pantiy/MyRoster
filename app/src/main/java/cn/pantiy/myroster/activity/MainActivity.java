@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.pantiy.myroster.R;
-import cn.pantiy.myroster.adapter.MainFragmentPagerAdapter;
+import cn.pantiy.myroster.adapter.AffairFragmentPagerAdapter;
+import cn.pantiy.myroster.fragment.AffairFragment;
 import cn.pantiy.myroster.fragment.BaseFragment;
 import cn.pantiy.myroster.fragment.FinishedAffairFragment;
 import cn.pantiy.myroster.fragment.IncompleteAffairFragment;
@@ -22,7 +23,7 @@ import cn.pantiy.myroster.model.ClassmateInfo;
  * Copyright © 2017 All rights Reserved by Pantiy
  */
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements AffairFragment.OnCreateAffairCallback{
 
     private static final String TAG = "MainActivity";
 
@@ -55,7 +56,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void setupAdapter() {
-        MainFragmentPagerAdapter adapter = new MainFragmentPagerAdapter(this,
+        AffairFragmentPagerAdapter adapter = new AffairFragmentPagerAdapter(this,
                 getSupportFragmentManager(), mFragmentList);
         mFragmentViewPager.setAdapter(adapter);
     }
@@ -117,4 +118,8 @@ public class MainActivity extends BaseActivity {
         return R.layout.activity_main;
     }
 
+    @Override
+    public void onCreateAffair() {
+        switchCurrentFragment(INCOMPLETE);
+    }
 }

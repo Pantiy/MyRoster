@@ -51,15 +51,18 @@ public abstract class AffairFragment extends BaseFragment {
     private static final int REQUEST_AFFAIR_NAME = -1;
     private static final int REQUEST_CHOOSE_EXCEL = 0;
 
-    private static final String ROSTER_IMPORT_KEY = "rosterImport";
+    private static final String kEY_ROSTER_IMPORT = "rosterImport";
 
     private static boolean sRosterImport;
 
     protected boolean mIsFinish;
+    protected boolean mCreateAffairInFinished;
 
     protected TextView mEmptyTv;
     protected ListView mAffairLv;
     protected AffairAdapter mAffairAdapter;
+
+    private OnCreateAffairCallback mCallback;
 
     protected abstract boolean setFinish();
 
@@ -73,6 +76,10 @@ public abstract class AffairFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         updateAffairList();
+        if (mCreateAffairInFinished) {
+            mCallback.onCreateAffair();
+            mCreateAffairInFinished = false;
+        }
     }
 
     @Override
@@ -95,7 +102,7 @@ public abstract class AffairFragment extends BaseFragment {
                 return true;
 
             case R.id.re_import_roster:
-
+                reImportRoster();
                 return true;
 
             default:
@@ -122,7 +129,6 @@ public abstract class AffairFragment extends BaseFragment {
             case REQUEST_AFFAIR_NAME:
                 if (resultCode == Activity.RESULT_OK) {
                     createAffair(data.getStringExtra(CreateAffairDialogFragment.EXTRA_AFFAIR_NAME));
-
                 }
                 break;
         }
@@ -130,7 +136,9 @@ public abstract class AffairFragment extends BaseFragment {
 
     @Override
     protected void initData() {
-        sRosterImport = SharedPreferencesUtil.getBoolean(ROSTER_IMPORT_KEY);
+        sRosterImport = SharedPreferencesUtil.getBoolean(kEY_ROSTER_IMPORT);
+        mCreateAffairInFinished = false;
+        mCallback = (OnCreateAffairCallback) getActivity();
         mIsFinish = setFinish();
     }
 
@@ -167,15 +175,24 @@ public abstract class AffairFragment extends BaseFragment {
         mAffairLv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                AffairLab.touch(mContext).deleteAffair((Affair) mAffairAdapter.getItem(position));
-                updateAffairList();
+                final int index = position;
+                new AlertDialog.Builder(mContext)
+                        .setMessage(R.string.message_delete_affair)
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                AffairLab.touch(mContext).deleteAffair((Affair)mAffairAdapter.getItem(index));
+                                updateAffairList();
+                            }})
+                        .setNegativeButton(R.string.cancel, null)
+                        .show();
                 return true;
             }
         });
     }
 
     private void skipToAffairDetail(boolean isFinish, UUID affairId) {
-        Intent intent = AffairDetailActivity.newInstance(mContext, affairId, mIsFinish);
+        Intent intent = AffairDetailActivity.newInstance(mContext, affairId, isFinish);
         startActivity(intent);
     }
 
@@ -210,6 +227,10 @@ public abstract class AffairFragment extends BaseFragment {
     private void createAffair(String affairName) {
         Affair affair = new Affair(affairName);
         AffairLab.touch(mContext).addAffair(affair);
+        Log.i(TAG, "UUID:" + affair.getId());
+        if (mIsFinish) {
+            mCreateAffairInFinished = true;
+        }
         skipToAffairDetail(mIsFinish, affair.getId());
     }
 
@@ -227,6 +248,23 @@ public abstract class AffairFragment extends BaseFragment {
         dialog.show();
     }
 
+    private void reImportRoster() {
+
+        new AlertDialog.Builder(mContext)
+                .setMessage(R.string.message_re_import_roster)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AffairLab.touch(mContext).deleteForm();
+                        ClassmateInfoLab.touch(mContext).deleteForm();
+                        updateAffairList();
+                        SharedPreferencesUtil.putBoolean(kEY_ROSTER_IMPORT, false);
+                        chooseExcelFile();
+                    }})
+                .setNegativeButton(R.string.cancel, null)
+                .show();
+    }
+
     private void chooseExcelFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
@@ -241,6 +279,10 @@ public abstract class AffairFragment extends BaseFragment {
     @Override
     protected int setLayoutRes() {
         return R.layout.fragment_affair;
+    }
+
+    public interface OnCreateAffairCallback {
+        void onCreateAffair();
     }
 
     private static class ImportExcelAsyncTask extends AsyncTask<String, Void, List<ClassmateInfo>> {
@@ -275,8 +317,8 @@ public abstract class AffairFragment extends BaseFragment {
             if (strings != null) {
                 Toast.makeText(MyApplication.getContext(), R.string.import_success,
                         Toast.LENGTH_SHORT).show();
-                sRosterImport = SharedPreferencesUtil.putBoolean(ROSTER_IMPORT_KEY, true);
-                Log.i(TAG, "roster import: " + SharedPreferencesUtil.getBoolean(ROSTER_IMPORT_KEY));
+                sRosterImport = SharedPreferencesUtil.putBoolean(kEY_ROSTER_IMPORT, true);
+                Log.i(TAG, "roster import: " + SharedPreferencesUtil.getBoolean(kEY_ROSTER_IMPORT));
             }
         }
     }

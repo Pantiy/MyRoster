@@ -94,6 +94,10 @@ public class AffairLab {
                 new String[] {affair.getId().toString()});
     }
 
+    public void deleteForm() {
+        mSQLiteDatabase.execSQL("DELETE FROM " + AffairDatabase.NAME);
+    }
+
     private AffairCursorWrapper queryAffair(String selection, String[] selectionArgs) {
         Cursor cursor = mSQLiteDatabase.query(
                 AffairDatabase.NAME,

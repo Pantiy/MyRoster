@@ -3,7 +3,7 @@ package cn.pantiy.myroster.adapter;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import cn.pantiy.myroster.model.Affair;
  * Copyright © 2017 All rights Reserved by Pantiy
  */
 
-public class AffairDetailFragmentPagerAdapter extends FragmentPagerAdapter {
+public class AffairDetailFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     private Context mContext;
 
@@ -38,5 +38,10 @@ public class AffairDetailFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         return mAffairList.size();
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 }

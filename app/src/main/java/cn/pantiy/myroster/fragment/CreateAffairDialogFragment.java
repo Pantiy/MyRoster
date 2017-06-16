@@ -36,7 +36,7 @@ public class CreateAffairDialogFragment extends DialogFragment {
 
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         sendResult(Activity.RESULT_OK, editText.getText().toString());
