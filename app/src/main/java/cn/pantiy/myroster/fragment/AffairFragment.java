@@ -258,7 +258,7 @@ public abstract class AffairFragment extends BaseFragment {
                         AffairLab.touch(mContext).deleteForm();
                         ClassmateInfoLab.touch(mContext).deleteForm();
                         updateAffairList();
-                        SharedPreferencesUtil.putBoolean(kEY_ROSTER_IMPORT, false);
+                        sRosterImport = SharedPreferencesUtil.putBoolean(kEY_ROSTER_IMPORT, false);
                         chooseExcelFile();
                     }})
                 .setNegativeButton(R.string.cancel, null)
