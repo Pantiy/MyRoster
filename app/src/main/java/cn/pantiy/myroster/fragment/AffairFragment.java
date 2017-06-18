@@ -1,14 +1,18 @@
 package cn.pantiy.myroster.fragment;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +37,7 @@ import cn.pantiy.myroster.model.AffairLab;
 import cn.pantiy.myroster.model.ClassmateInfo;
 import cn.pantiy.myroster.model.ClassmateInfoLab;
 import cn.pantiy.myroster.utils.ExcelUtil;
+import cn.pantiy.myroster.utils.FileUtil;
 import cn.pantiy.myroster.utils.SharedPreferencesUtil;
 import jxl.read.biff.BiffException;
 
@@ -50,6 +55,7 @@ public abstract class AffairFragment extends BaseFragment {
 
     private static final int REQUEST_AFFAIR_NAME = -1;
     private static final int REQUEST_CHOOSE_EXCEL = 0;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
 
     private static final String kEY_ROSTER_IMPORT = "rosterImport";
 
@@ -118,9 +124,9 @@ public abstract class AffairFragment extends BaseFragment {
             case REQUEST_CHOOSE_EXCEL:
                 if (resultCode == Activity.RESULT_OK) {
                     Uri uri = data.getData();
-                    Log.i(TAG, uri.getPath());
+                    Log.i(TAG, "uri: " + uri.toString());
                     ImportExcelAsyncTask excelAsyncTask = new ImportExcelAsyncTask();
-                    excelAsyncTask.execute(uri.getPath());
+                    excelAsyncTask.execute(uri);
                 } else {
                     Log.i(TAG, "resultCode " + resultCode);
                     Toast.makeText(mContext, R.string.import_failed, Toast.LENGTH_SHORT).show();
@@ -266,6 +272,11 @@ public abstract class AffairFragment extends BaseFragment {
     }
 
     private void chooseExcelFile() {
+        Log.i(TAG, "permission: " + checkPermission());
+        if (!checkPermission()) {
+            requestPermission();
+            return;
+        }
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -274,6 +285,31 @@ public abstract class AffairFragment extends BaseFragment {
         } catch (android.content.ActivityNotFoundException ane) {
             Toast.makeText(mContext, R.string.install_file_manager, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private boolean checkPermission() {
+        return (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void requestPermission() {
+        Log.i(TAG, "requestPermission()");
+        requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                REQUEST_READ_EXTERNAL_STORAGE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.i(TAG, "permission: " + checkPermission());
+                    chooseExcelFile();
+                }
+                break;
+        }
+
     }
 
     @Override
@@ -285,20 +321,29 @@ public abstract class AffairFragment extends BaseFragment {
         void onCreateAffair();
     }
 
-    private static class ImportExcelAsyncTask extends AsyncTask<String, Void, List<ClassmateInfo>> {
+    private static class ImportExcelAsyncTask extends AsyncTask<Uri, Void, List<ClassmateInfo>> {
 
         private ClassmateInfoLab mClassmateInfoLab = ClassmateInfoLab.touch(MyApplication.getContext());
 
         @Override
-        protected List<ClassmateInfo> doInBackground(String... params){
+        protected List<ClassmateInfo> doInBackground(Uri... params){
             Log.i(TAG, "doInBackground()");
-            String path = params[0];
-            File file = new File(path);
+            Uri uri = params[0];
+            String path = FileUtil.getPath(MyApplication.getContext(), uri);
+            Log.i(TAG, "filePath: " + path);
+            File file;
+            if (path != null) {
+                file = new File(path);
+            } else {
+                return null;
+            }
 
             try {
                 List<String[]> excelContent = ExcelUtil.readExcel(file);
-                mClassmateInfoLab.setClassmateInfoList(excelContent);
-                return mClassmateInfoLab.getClassmateInfoList();
+                if (excelContent != null) {
+                    mClassmateInfoLab.setClassmateInfoList(excelContent);
+                    return mClassmateInfoLab.getClassmateInfoList();
+                }
             } catch (IOException ioe) {
                 Log.e(TAG, "error", ioe);
                 Toast.makeText(MyApplication.getContext(), R.string.import_failed_check_permisson,
@@ -319,6 +364,9 @@ public abstract class AffairFragment extends BaseFragment {
                         Toast.LENGTH_SHORT).show();
                 sRosterImport = SharedPreferencesUtil.putBoolean(kEY_ROSTER_IMPORT, true);
                 Log.i(TAG, "roster import: " + SharedPreferencesUtil.getBoolean(kEY_ROSTER_IMPORT));
+            } else {
+                Toast.makeText(MyApplication.getContext(), R.string.import_failed,
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -21,6 +21,7 @@
     <string name="import_failed_check_permisson">导入失败，请检查权限</string>
     <string name="error_not_excel">请选择xls格式的Excel文件</string>
     <string name="error_empty_excel">Excel文件无内容</string>
+    <string name="import_roster">导入名单</string>
     <string name="re_import_roster">重新导入名单</string>
     <string name="empty">空</string>
     <string name="input_affair_name">输入事务名称</string>
