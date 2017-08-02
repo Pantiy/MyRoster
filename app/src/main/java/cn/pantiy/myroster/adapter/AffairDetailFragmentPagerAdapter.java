@@ -22,17 +22,19 @@ public class AffairDetailFragmentPagerAdapter extends FragmentStatePagerAdapter 
     private Context mContext;
 
     private List<Affair> mAffairList;
+    private boolean mIsFinish;
 
     public AffairDetailFragmentPagerAdapter(Context context, FragmentManager fragmentManager,
-                                            List<Affair> affairList) {
+                                            List<Affair> affairList, boolean isFinish) {
         super(fragmentManager);
         mContext = context;
         mAffairList = affairList;
+        mIsFinish = isFinish;
     }
 
     @Override
     public Fragment getItem(int i) {
-        return AffairDetailFragment.newInstance(mAffairList.get(i).getId());
+        return AffairDetailFragment.newInstance(mAffairList.get(i).getId(), mIsFinish);
     }
 
     @Override

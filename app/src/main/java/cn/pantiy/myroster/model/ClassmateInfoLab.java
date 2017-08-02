@@ -16,8 +16,6 @@ import cn.pantiy.myroster.database.ClassmateInfo.ClassmateInfoDatabaseHelper;
 import static cn.pantiy.myroster.database.ClassmateInfo.ClassmateInfoDatabase.Table;
 
 /**
- * Test
- * com.pantiy.test
  * Created by Pantiy on 2017/6/2.
  * Copyright © 2017 All rights Reserved by Pantiy
  */

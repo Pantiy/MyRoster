@@ -3,7 +3,9 @@ package cn.pantiy.myroster.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import java.util.List;
@@ -27,11 +29,13 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
     private static final String TAG = "AffairDetailFragment";
 
     private static final String KEY_AFFAIR_ID = "affairId";
+    private static final String KEY_IS_FINISH = "isFinish";
 
     private static final int INCOMPLETE = 0;
     private static final int FINISHED = 1;
 
     private Affair mAffair;
+    private boolean mIsFinish;
 
     private RadioGroup mRadioGroup;
     private ListView mIncompleteLv;
@@ -42,16 +46,18 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
 
     private OnAffairContentChangedCallback mCallback;
 
-    public static AffairDetailFragment newInstance(UUID affairId) {
+    public static AffairDetailFragment newInstance(UUID affairId, boolean isFinish) {
         AffairDetailFragment affairDetailFragment = new AffairDetailFragment();
         Bundle args = new Bundle();
         args.putSerializable(KEY_AFFAIR_ID, affairId);
+        args.putBoolean(KEY_IS_FINISH, isFinish);
         affairDetailFragment.setArguments(args);
         return affairDetailFragment;
     }
 
     @Override
     protected void initData() {
+        mIsFinish = getArguments().getBoolean(KEY_IS_FINISH);
         UUID affairId = (UUID) getArguments().getSerializable(KEY_AFFAIR_ID);
         mAffair = AffairLab.touch(mContext).getAffair(affairId);
         mCallback = (OnAffairContentChangedCallback) getActivity();
@@ -62,6 +68,12 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
         mRadioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
         mIncompleteLv = (ListView) view.findViewById(R.id.incomplete_lv);
         mFinishedLv = (ListView) view.findViewById(R.id.finished_lv);
+        if (mIsFinish) {
+            RadioButton finishedRadioBtn
+                    = (RadioButton) mView.findViewById(R.id.finished_radioBtn);
+            finishedRadioBtn.setChecked(true);
+            switchListView(FINISHED);
+        }
     }
 
     @Override

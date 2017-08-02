@@ -77,7 +77,7 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
     @Override
     protected void setupAdapter() {
         mFragmentPagerAdapter = new AffairDetailFragmentPagerAdapter(this, getSupportFragmentManager(),
-                mAffairList);
+                mAffairList, mIsFinish);
         mViewPager.setAdapter(mFragmentPagerAdapter);
         setCurrentFragment(mAffairId);
     }
@@ -180,8 +180,7 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
             mAffairId = mAffairList.get(current + 1).getId();
         } else if (mAffairList.size() == 1) {
             mAffairId = mAffairList.get(0).getId();
-        }
-        else {
+        } else {
             mAffairId = mAffairList.get(current - 1).getId();
         }
     }
