@@ -3,6 +3,8 @@ package cn.pantiy.myroster.database.Affair;
 import android.database.Cursor;
 import android.database.CursorWrapper;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import cn.pantiy.myroster.model.Affair;
@@ -25,11 +27,13 @@ public class AffairCursorWrapper extends CursorWrapper {
     public Affair getAffair() {
 
         String id = getString(getColumnIndex(Table.ID));
+        long createTime = getLong(getColumnIndex(Table.CREATE_TIME));
         String affairName = getString(getColumnIndex(Table.AFFAIR_NAME));
         String stateArrayString = getString(getColumnIndex(Table.STATE_ARRAY));
         String isFinish = getString(getColumnIndex(Table.IS_FINISH));
 
         Affair affair = new Affair(UUID.fromString(id), affairName);
+        affair.setCreateTime(new Date(createTime));
         affair.setStateArray(affair.parseStateArrayString(stateArrayString));
         affair.setFinish(isFinish.equals("1"));
 

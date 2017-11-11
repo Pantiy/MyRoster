@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import cn.pantiy.myroster.R;
@@ -62,6 +63,8 @@ public class AffairAdapter extends BaseAdapter {
         final Affair affair = mAffairList.get(position);
         TextView affairName = (TextView) convertView.findViewById(R.id.affairName_tv);
         affairName.setText(affair.getAffairName());
+        TextView createTime = (TextView) convertView.findViewById(R.id.affairCreateTime_tv);
+        createTime.setText(new SimpleDateFormat(Affair.DATE_FORMAT).format(affair.getCreateTime()));
         final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.affairIsFinish_cb);
         checkBox.setChecked(affair.isFinish());
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

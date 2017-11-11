@@ -1,5 +1,6 @@
 package cn.pantiy.myroster.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,14 +15,18 @@ import cn.pantiy.myroster.global.MyApplication;
 
 public class Affair {
 
+    public static final String DATE_FORMAT = "EE  |  HH:mm  |  yyyy-MM-dd";
+
     private UUID mId;
     private String mAffairName;
+    private Date mCreateTime;
     private List<ClassmateInfo> mClassmateInfoList;
     private boolean[] mStateArray;
     private boolean mIsFinish;
 
     public Affair(String affairName) {
         this(UUID.randomUUID(), affairName);
+        mCreateTime = new Date();
     }
 
     public Affair(UUID id, String affairName) {
@@ -83,6 +88,14 @@ public class Affair {
         mId = id;
     }
 
+    public Date getCreateTime() {
+        return mCreateTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        mCreateTime = createTime;
+    }
+
     public boolean isFinish() {
         return mIsFinish;
     }
@@ -94,4 +107,5 @@ public class Affair {
     public boolean equals(Affair affair) {
         return this.getId().equals(affair.getId());
     }
+
 }

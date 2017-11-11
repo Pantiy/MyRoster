@@ -125,6 +125,7 @@ public class AffairLab {
     private ContentValues getContentValues(Affair affair) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(Table.ID, affair.getId().toString());
+        contentValues.put(Table.CREATE_TIME, affair.getCreateTime().getTime());
         contentValues.put(Table.AFFAIR_NAME, affair.getAffairName());
         contentValues.put(Table.STATE_ARRAY, affair.stateArrayToString(affair.getStateArray()));
         contentValues.put(Table.IS_FINISH, affair.isFinish()? "1" : "0");
