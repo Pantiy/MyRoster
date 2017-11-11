@@ -86,7 +86,7 @@ public class AffairLab {
 
     public void updateAffair(Affair affair) {
         mSQLiteDatabase.update(AffairDatabase.NAME, getContentValues(affair),
-                Table.AFFAIR_NAME + "=?", new String[] {affair.getAffairName()});
+                Table.ID + "=?", new String[] {affair.getId().toString()});
     }
 
     public void deleteAffair(Affair affair) {

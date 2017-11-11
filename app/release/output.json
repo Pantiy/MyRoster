@@ -1,1 +1,1 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":1},"outputFile":{"path":"/home/pantiy/AndroidStudioProjects/MyRoster/app/release/app-release.apk"},"properties":{"packageId":"cn.pantiy.myroster","split":""}}]
+[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":1},"path":"app-release.apk","properties":{"packageId":"cn.pantiy.myroster","split":"","minSdkVersion":"21"}}]
