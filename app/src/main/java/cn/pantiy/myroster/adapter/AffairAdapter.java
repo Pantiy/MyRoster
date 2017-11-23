@@ -26,6 +26,7 @@ import cn.pantiy.myroster.model.AffairLab;
 public class AffairAdapter extends BaseAdapter {
 
     private List<Affair> mAffairList;
+    private boolean mAffairIsFinish;
 
     private Context mContext;
 
@@ -38,6 +39,7 @@ public class AffairAdapter extends BaseAdapter {
 
     public AffairAdapter(Context context, boolean isFinish) {
         mContext = context;
+        mAffairIsFinish = isFinish;
         mAffairList = AffairLab.touch(context).getAffairList(isFinish);
     }
 
@@ -76,6 +78,7 @@ public class AffairAdapter extends BaseAdapter {
                 mOnAffairListChangeListener.onAffairListChanged();
             }
         });
+
         return convertView;
     }
 

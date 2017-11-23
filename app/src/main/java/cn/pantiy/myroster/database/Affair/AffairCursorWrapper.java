@@ -35,7 +35,7 @@ public class AffairCursorWrapper extends CursorWrapper {
         Affair affair = new Affair(UUID.fromString(id), affairName);
         affair.setCreateTime(new Date(createTime));
         affair.setStateArray(affair.parseStateArrayString(stateArrayString));
-        affair.setFinish(isFinish.equals("1"));
+        affair.setFinish("1".equals(isFinish));
 
         return affair;
     }

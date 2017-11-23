@@ -75,25 +75,30 @@ public class AffairDetailAdapter extends BaseAdapter {
         studentName.setText(mClassmateInfoList.get(position).getStudentName());
         final CheckBox state = (CheckBox) convertView.findViewById(R.id.state_cb);
         state.setChecked(mStateArray[position]);
-        state.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                state.setClickable(false);
-                mStateArray[position] = isChecked;
-                mAffair.setStateArray(mStateArray);
-                List<ClassmateInfo> classmateInfoList = new ArrayList<>();
-                boolean[] stateArray = new boolean[mStateArray.length - 1];
-                for (int i = 0, index = 0; i < mStateArray.length; i++) {
-                    if (mStateArray[i] != isChecked) {
-                        stateArray[index] = mStateArray[i];
-                        classmateInfoList.add(mClassmateInfoList.get(i));
-                        index++;
+        Log.i(TAG, mAffair.isFinish() + "");
+        if (!mAffair.isFinish()) {
+            state.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    state.setClickable(false);
+                    mStateArray[position] = isChecked;
+                    mAffair.setStateArray(mStateArray);
+                    List<ClassmateInfo> classmateInfoList = new ArrayList<>();
+                    boolean[] stateArray = new boolean[mStateArray.length - 1];
+                    for (int i = 0, index = 0; i < mStateArray.length; i++) {
+                        if (mStateArray[i] != isChecked) {
+                            stateArray[index] = mStateArray[i];
+                            classmateInfoList.add(mClassmateInfoList.get(i));
+                            index++;
+                        }
                     }
+                    mOnAffairContentChangeListener.onAffairContentChanged(classmateInfoList, stateArray,
+                            mIsFinish);
                 }
-                mOnAffairContentChangeListener.onAffairContentChanged(classmateInfoList, stateArray,
-                        mIsFinish);
-            }
-        });
+            });
+        } else {
+            state.setClickable(false);
+        }
         return convertView;
     }
 
@@ -116,7 +121,7 @@ public class AffairDetailAdapter extends BaseAdapter {
         mClassmateInfoList = classmateInfoList;
         mStateArray = stateArray;
         Log.i(TAG, "prescribedStateArray(" + isFinish + "):" + mAffair.stateArrayToString(stateArray));
-        mAffair = new Affair(mAffair.getId(), mAffair.getAffairName());
+        mAffair = new Affair(mAffair.getId(), mAffair.getAffairName(), mAffair.isFinish());
         mAffair.setClassmateInfoList(classmateInfoList);
         mAffair.setStateArray(stateArray);
     }

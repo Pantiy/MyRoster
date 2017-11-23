@@ -40,6 +40,11 @@ public class Affair {
         mIsFinish = false;
     }
 
+    public Affair(UUID id, String affairName, boolean isFinish) {
+        this(id, affairName);
+        mIsFinish = isFinish;
+    }
+
     public String getAffairName() {
         return mAffairName;
     }
