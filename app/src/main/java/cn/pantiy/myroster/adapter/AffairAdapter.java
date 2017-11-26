@@ -80,7 +80,9 @@ public class AffairAdapter extends BaseAdapter {
         });
 
         return convertView;
+
     }
+
 
     public List<Affair> getAffairList() {
         return mAffairList;
