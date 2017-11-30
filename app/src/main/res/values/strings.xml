@@ -29,6 +29,7 @@
     <string name="message_re_import_roster">这将清空所有数据</string>
 
     <string name="display_subtitle_count">显示人数</string>
+    <string name="display_roster">显示名单</string>
     <string name="hide_subtitle_count">隐藏人数</string>
     <string name="subtitle_count">共 %1$d 人 | %2$d 人未完成</string>
     <string name="delete_affair">删除事务</string>

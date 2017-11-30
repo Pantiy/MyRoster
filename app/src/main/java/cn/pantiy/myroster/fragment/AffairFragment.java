@@ -30,7 +30,9 @@ import java.util.UUID;
 
 import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.activity.AffairDetailActivity;
+import cn.pantiy.myroster.activity.RosterActivity;
 import cn.pantiy.myroster.adapter.AffairAdapter;
+import cn.pantiy.myroster.adapter.RosterAdapter;
 import cn.pantiy.myroster.global.MyApplication;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
@@ -105,6 +107,11 @@ public abstract class AffairFragment extends BaseFragment {
                 } else {
                     createDialog();
                 }
+                return true;
+
+            case R.id.display_roster:
+                Intent intent = new Intent(mContext, RosterActivity.class);
+                startActivity(intent);
                 return true;
 
             case R.id.re_import_roster:

@@ -8,6 +8,9 @@
         android:title="@string/add_affair"
         app:showAsAction="ifRoom"/>
 
+    <item android:id="@+id/display_roster"
+          android:title="@string/display_roster"/>
+
     <item
         android:id="@+id/re_import_roster"
         android:title="@string/re_import_roster"/>
