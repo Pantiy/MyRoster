@@ -12,6 +12,7 @@ import java.util.UUID;
 import cn.pantiy.myroster.database.Affair.AffairCursorWrapper;
 import cn.pantiy.myroster.database.Affair.AffairDatabase;
 import cn.pantiy.myroster.database.Affair.AffairDatabaseHelper;
+import cn.pantiy.myroster.utils.RosterInAffairCreator;
 
 import static cn.pantiy.myroster.database.Affair.AffairDatabase.Table;
 
@@ -26,6 +27,7 @@ public class AffairLab {
 
     private static AffairLab sAffairLab;
 
+    private Context mContext;
     private SQLiteDatabase mSQLiteDatabase;
 
     public static AffairLab touch(Context context) {
@@ -36,7 +38,8 @@ public class AffairLab {
     }
 
     private AffairLab(Context context) {
-        mSQLiteDatabase = new AffairDatabaseHelper(context).getWritableDatabase();
+        mContext = context;
+        mSQLiteDatabase = new AffairDatabaseHelper(mContext).getWritableDatabase();
     }
 
     public List<Affair> getAffairList(boolean isFinish) {

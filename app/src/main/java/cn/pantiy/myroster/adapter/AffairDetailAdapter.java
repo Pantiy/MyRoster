@@ -16,6 +16,7 @@ import java.util.List;
 import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.ClassmateInfo;
+import cn.pantiy.myroster.model.RosterInAffairLab;
 
 /**
  * MyRoster
@@ -41,6 +42,7 @@ public class AffairDetailAdapter extends BaseAdapter {
         mContext = context;
         mAffair = affair;
         mClassmateInfoList = affair.getClassmateInfoList();
+        //mClassmateInfoList = RosterInAffairLab.touch(context, affair.getId().toString()).getRoster();
         mStateArray = affair.getStateArray();
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import cn.pantiy.myroster.global.MyApplication;
+import cn.pantiy.myroster.utils.RosterInAffairCreator;
 
 /**
  * MyRoster
@@ -33,6 +34,14 @@ public class Affair {
         mId = id;
         setAffairName(affairName);
         setClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).getClassmateInfoList());
+        List<ClassmateInfo> classmateInfoList =
+                RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).getRoster();
+        if (classmateInfoList == null) {
+            RosterInAffairCreator.create(MyApplication.getContext(), mId.toString());
+            classmateInfoList =
+                    RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).getRoster();
+        }
+        setClassmateInfoList(classmateInfoList);
         mStateArray = new boolean[getClassmateInfoList().size()];
         for (int i = 0; i < mStateArray.length; i++) {
             mStateArray[i] = false;
