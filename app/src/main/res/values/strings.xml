@@ -18,7 +18,7 @@
     <string name="install_file_manager">请安装文件管理类App</string>
     <string name="import_success">导入成功</string>
     <string name="import_failed">导入失败</string>
-    <string name="import_failed_check_permisson">导入失败，请检查权限</string>
+    <string name="import_failed_check_permission">导入失败，请检查权限</string>
     <string name="error_not_excel">请选择xls格式的Excel文件</string>
     <string name="error_empty_excel">Excel文件无内容</string>
     <string name="import_roster">导入名单</string>
@@ -30,6 +30,7 @@
 
     <string name="display_subtitle_count">显示人数</string>
     <string name="display_roster">显示名单</string>
+    <string name="export_affair">导出事务</string>
     <string name="hide_subtitle_count">隐藏人数</string>
     <string name="subtitle_count">共 %1$d 人 | %2$d 人未完成</string>
     <string name="delete_affair">删除事务</string>

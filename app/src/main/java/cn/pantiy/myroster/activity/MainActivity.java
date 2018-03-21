@@ -14,7 +14,6 @@ import cn.pantiy.myroster.fragment.AffairFragment;
 import cn.pantiy.myroster.fragment.BaseFragment;
 import cn.pantiy.myroster.fragment.FinishedAffairFragment;
 import cn.pantiy.myroster.fragment.IncompleteAffairFragment;
-import cn.pantiy.myroster.model.ClassmateInfo;
 
 /**
  * MyRoster
@@ -29,8 +28,6 @@ public class MainActivity extends BaseActivity implements AffairFragment.OnCreat
 
     public static final int INCOMPLETE = 0;
     public static final int FINISHED = 1;
-
-    private List<ClassmateInfo> mClassmateInfoList;
 
     private List<BaseFragment> mFragmentList;
     private int mCurrent = 0;

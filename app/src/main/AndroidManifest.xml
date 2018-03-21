@@ -3,6 +3,7 @@
           package="cn.pantiy.myroster">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".global.MyApplication"
@@ -13,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/app_name"
+            android:label= "@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>

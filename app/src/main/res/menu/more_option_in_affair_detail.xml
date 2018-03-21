@@ -7,4 +7,7 @@
     <item android:id="@+id/deleteAffair"
           android:title="@string/delete_affair"/>
 
+    <item android:id="@+id/exportAffair"
+          android:title="@string/export_affair"/>
+
 </menu>

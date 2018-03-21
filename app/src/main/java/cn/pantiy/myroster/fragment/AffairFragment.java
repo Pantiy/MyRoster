@@ -32,7 +32,6 @@ import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.activity.AffairDetailActivity;
 import cn.pantiy.myroster.activity.RosterActivity;
 import cn.pantiy.myroster.adapter.AffairAdapter;
-import cn.pantiy.myroster.adapter.RosterAdapter;
 import cn.pantiy.myroster.global.MyApplication;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
@@ -40,6 +39,7 @@ import cn.pantiy.myroster.model.ClassmateInfo;
 import cn.pantiy.myroster.model.ClassmateInfoLab;
 import cn.pantiy.myroster.utils.ExcelUtil;
 import cn.pantiy.myroster.utils.FileUtil;
+import cn.pantiy.myroster.utils.PermissionUtil;
 import cn.pantiy.myroster.utils.SharedPreferencesUtil;
 import jxl.read.biff.BiffException;
 
@@ -226,7 +226,7 @@ public abstract class AffairFragment extends BaseFragment {
     }
 
     private List<Affair> getAffairList() {
-        return AffairLab.touch(mContext).getAffairList(mIsFinish);
+        return AffairLab.touch(mContext).queryAffairList(mIsFinish);
     }
 
     private void createDialog() {
@@ -239,7 +239,7 @@ public abstract class AffairFragment extends BaseFragment {
 
     private void createAffair(String affairName) {
         Affair affair = new Affair(affairName);
-        AffairLab.touch(mContext).addAffair(affair);
+        AffairLab.touch(mContext).insertAffair(affair);
         Log.i(TAG, "UUID:" + affair.getId());
         if (mIsFinish) {
             mCreateAffairInFinished = true;
@@ -279,9 +279,10 @@ public abstract class AffairFragment extends BaseFragment {
     }
 
     private void chooseExcelFile() {
-        Log.i(TAG, "permission: " + checkPermission());
-        if (!checkPermission()) {
-            requestPermission();
+        if (!PermissionUtil.checkPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            PermissionUtil.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    REQUEST_READ_EXTERNAL_STORAGE);
             return;
         }
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -294,16 +295,16 @@ public abstract class AffairFragment extends BaseFragment {
         }
     }
 
-    private boolean checkPermission() {
-        return (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED);
-    }
-
-    private void requestPermission() {
-        Log.i(TAG, "requestPermission()");
-        requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
-                REQUEST_READ_EXTERNAL_STORAGE);
-    }
+//    private boolean checkPermission() {
+//        return (ContextCompat.checkSelfPermission(mContext, Manifest.permission.READ_EXTERNAL_STORAGE)
+//                == PackageManager.PERMISSION_GRANTED);
+//    }
+//
+//    private void requestPermission() {
+//        Log.i(TAG, "requestPermission()");
+//        requestPermissions(new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+//                REQUEST_READ_EXTERNAL_STORAGE);
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -311,7 +312,6 @@ public abstract class AffairFragment extends BaseFragment {
         switch (requestCode) {
             case REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.i(TAG, "permission: " + checkPermission());
                     chooseExcelFile();
                 }
                 break;
@@ -349,15 +349,15 @@ public abstract class AffairFragment extends BaseFragment {
                 List<String[]> excelContent = ExcelUtil.readExcel(file);
                 if (excelContent != null) {
                     mClassmateInfoLab.setClassmateInfoList(excelContent);
-                    return mClassmateInfoLab.getClassmateInfoList();
+                    return mClassmateInfoLab.queryClassmateInfoList();
                 }
             } catch (IOException ioe) {
                 Log.e(TAG, "error", ioe);
-                Toast.makeText(MyApplication.getContext(), R.string.import_failed_check_permisson,
+                Toast.makeText(MyApplication.getContext(), R.string.import_failed_check_permission,
                         Toast.LENGTH_SHORT).show();
             } catch (BiffException be) {
                 Log.e(TAG, "error", be);
-                Toast.makeText(MyApplication.getContext(), R.string.import_failed_check_permisson,
+                Toast.makeText(MyApplication.getContext(), R.string.import_failed_check_permission,
                         Toast.LENGTH_SHORT).show();
             }
             return null;

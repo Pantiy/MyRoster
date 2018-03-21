@@ -3,7 +3,6 @@ package cn.pantiy.myroster.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -59,7 +58,7 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
     protected void initData() {
         mIsFinish = getArguments().getBoolean(KEY_IS_FINISH);
         UUID affairId = (UUID) getArguments().getSerializable(KEY_AFFAIR_ID);
-        mAffair = AffairLab.touch(mContext).getAffair(affairId);
+        mAffair = AffairLab.touch(mContext).queryAffair(affairId);
         mCallback = (OnAffairContentChangedCallback) getActivity();
     }
 

@@ -1,8 +1,17 @@
 package cn.pantiy.myroster.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.nfc.Tag;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -10,7 +19,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +32,9 @@ import cn.pantiy.myroster.fragment.AffairDetailFragment;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
 import cn.pantiy.myroster.model.ClassmateInfoLab;
+import cn.pantiy.myroster.utils.ExcelUtil;
+import cn.pantiy.myroster.utils.PermissionUtil;
+import jxl.write.WriteException;
 
 /**
  * MyRoster
@@ -31,6 +46,7 @@ import cn.pantiy.myroster.model.ClassmateInfoLab;
 public class AffairDetailActivity extends BaseActivity implements AffairDetailFragment.OnAffairContentChangedCallback{
 
     private static final String TAG = "AffairDetailActivity";
+    private static final int REQUEST_WRITE_PERMISSION_CODE = 1;
 
     private static final String EXTRA_AFFAIR_ID = "affairId";
     private static final String EXTRA_IS_FINISH = "isFinish";
@@ -61,11 +77,11 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
         mAffairId = (UUID) getIntent().getSerializableExtra(EXTRA_AFFAIR_ID);
         Log.i(TAG, "UUID" + mAffairId.toString());
         mIsFinish = getIntent().getBooleanExtra(EXTRA_IS_FINISH, false);
-        Affair affair = mAffairLab.getAffair(mAffairId);
+        Affair affair = mAffairLab.queryAffair(mAffairId);
         if (affair.isFinish() != mIsFinish) {
             mIsFinish = !mIsFinish;
         }
-        mAffairList = AffairLab.touch(this).getAffairList(mIsFinish);
+        mAffairList = AffairLab.touch(this).queryAffairList(mIsFinish);
     }
 
     @Override
@@ -141,9 +157,19 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
                         .setNegativeButton(R.string.cancel, null)
                         .show();
                 return true;
+            case R.id.exportAffair:
+                if (!PermissionUtil.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    PermissionUtil.requestPermission(this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            REQUEST_WRITE_PERMISSION_CODE);
+                } else {
+                    exportExcel();
+                }
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return false;
     }
 
     private void deleteAffair(int current) {
@@ -186,9 +212,9 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
     }
 
     private void displaySubtitle() {
-        int count = ClassmateInfoLab.touch(this).getClassmateInfoList().size();
+        int count = ClassmateInfoLab.touch(this).queryClassmateInfoList().size();
         int incompleteCount = 0;
-        boolean[] stateArray = mAffairLab.getAffair(mAffairId).getStateArray();
+        boolean[] stateArray = mAffairLab.queryAffair(mAffairId).getStateArray();
         for (boolean state : stateArray) {
             if (!state) {
                 incompleteCount++;
@@ -224,6 +250,58 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
                 }
                 break;
             }
+        }
+    }
+
+    private void exportExcel() {
+
+        final Affair affair = AffairLab.touch(this).queryAffair(mAffairId);
+
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    ExcelUtil.writeExcel(affair);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (WriteException e) {
+                    e.printStackTrace();
+                }
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(AffairDetailActivity.this,
+                                "已导出", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }.start();
+    }
+
+//    private boolean checkPermission() {
+//        return (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                == PackageManager.PERMISSION_GRANTED);
+//    }
+//
+//    private void requestPermission() {
+//        ActivityCompat.requestPermissions(this,
+//                new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                REQUEST_WRITE_PERMISSION_CODE);
+//    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_WRITE_PERMISSION_CODE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    exportExcel();
+                }
+                break;
+            default:
+                break;
         }
     }
 

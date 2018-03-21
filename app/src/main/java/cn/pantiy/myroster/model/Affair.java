@@ -16,8 +16,6 @@ import cn.pantiy.myroster.utils.RosterInAffairCreator;
 
 public class Affair {
 
-    public static final String DATE_FORMAT = "EE  |  HH:mm  |  yyyy-MM-dd";
-
     private UUID mId;
     private String mAffairName;
     private Date mCreateTime;
@@ -33,13 +31,13 @@ public class Affair {
     public Affair(UUID id, String affairName) {
         mId = id;
         setAffairName(affairName);
-        setClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).getClassmateInfoList());
+        setClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).queryClassmateInfoList());
         List<ClassmateInfo> classmateInfoList =
-                RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).getRoster();
+                RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).queryRoster();
         if (classmateInfoList == null) {
             RosterInAffairCreator.create(MyApplication.getContext(), mId.toString());
             classmateInfoList =
-                    RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).getRoster();
+                    RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).queryRoster();
         }
         setClassmateInfoList(classmateInfoList);
         mStateArray = new boolean[getClassmateInfoList().size()];

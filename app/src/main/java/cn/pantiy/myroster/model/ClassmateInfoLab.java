@@ -39,7 +39,7 @@ public class ClassmateInfoLab {
         mSQLiteDatabase = new ClassmateInfoDatabaseHelper(context).getReadableDatabase();
     }
 
-    public List<ClassmateInfo> getClassmateInfoList() {
+    public List<ClassmateInfo> queryClassmateInfoList() {
         List<ClassmateInfo> classmateInfoList = new ArrayList<>();
         ClassmateInfoCursorWrapper cursorWrapper = getCursorWrapper();
         if (cursorWrapper.getCount() == 0) {
@@ -71,11 +71,11 @@ public class ClassmateInfoLab {
 
     private void saveClassmateInfoList(List<ClassmateInfo> classmateInfoList) {
         for (ClassmateInfo classmateInfo : classmateInfoList) {
-            addClassmateInfo(getContentValues(classmateInfo));
+            insertClassmateInfo(getContentValues(classmateInfo));
         }
     }
 
-    private void addClassmateInfo(ContentValues contentValues) {
+    private void insertClassmateInfo(ContentValues contentValues) {
         mSQLiteDatabase.insert(ClassmateInfoDatabase.NAME, null, contentValues);
     }
 

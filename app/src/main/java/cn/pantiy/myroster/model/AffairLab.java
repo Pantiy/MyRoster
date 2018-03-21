@@ -12,7 +12,6 @@ import java.util.UUID;
 import cn.pantiy.myroster.database.Affair.AffairCursorWrapper;
 import cn.pantiy.myroster.database.Affair.AffairDatabase;
 import cn.pantiy.myroster.database.Affair.AffairDatabaseHelper;
-import cn.pantiy.myroster.utils.RosterInAffairCreator;
 
 import static cn.pantiy.myroster.database.Affair.AffairDatabase.Table;
 
@@ -42,8 +41,8 @@ public class AffairLab {
         mSQLiteDatabase = new AffairDatabaseHelper(mContext).getWritableDatabase();
     }
 
-    public List<Affair> getAffairList(boolean isFinish) {
-        List<Affair> affairList = getAffairList();
+    public List<Affair> queryAffairList(boolean isFinish) {
+        List<Affair> affairList = queryAffairList();
         List<Affair> affairs = new ArrayList<>();
         for (int i = 0; i < affairList.size(); i++) {
             Affair affair = affairList.get(i);
@@ -54,7 +53,7 @@ public class AffairLab {
         return affairs;
     }
 
-    public List<Affair> getAffairList() {
+    public List<Affair> queryAffairList() {
         List<Affair> affairList = new ArrayList<>();
         AffairCursorWrapper cursorWrapper = getCursorWrapper();
         if (cursorWrapper.getCount() == 0) {
@@ -69,8 +68,8 @@ public class AffairLab {
         return affairList;
     }
 
-    public Affair getAffair(UUID affairId) {
-        AffairCursorWrapper cursorWrapper = queryAffair(Table.ID + "=?",
+    public Affair queryAffair(UUID affairId) {
+        AffairCursorWrapper cursorWrapper = getAffairCursorWrapper(Table.ID + "=?",
                 new String[] {affairId.toString()});
         try {
             if (cursorWrapper.getCount() == 0) {
@@ -83,7 +82,7 @@ public class AffairLab {
         }
     }
 
-    public void addAffair(Affair affair) {
+    public void insertAffair(Affair affair) {
         mSQLiteDatabase.insert(AffairDatabase.NAME, null, getContentValues(affair));
     }
 
@@ -101,7 +100,7 @@ public class AffairLab {
         mSQLiteDatabase.execSQL("DELETE FROM " + AffairDatabase.NAME);
     }
 
-    private AffairCursorWrapper queryAffair(String selection, String[] selectionArgs) {
+    private AffairCursorWrapper getAffairCursorWrapper(String selection, String[] selectionArgs) {
         Cursor cursor = mSQLiteDatabase.query(
                 AffairDatabase.NAME,
                 null,

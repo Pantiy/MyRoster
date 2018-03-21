@@ -38,7 +38,7 @@ public final class RosterInAffairCreator {
     private void insertData() {
 
         List<ClassmateInfo> classmateInfoList =
-                ClassmateInfoLab.touch(mContext).getClassmateInfoList();
+                ClassmateInfoLab.touch(mContext).queryClassmateInfoList();
 
         for (ClassmateInfo classmateInfo : classmateInfoList) {
             mSQLiteDatabase.insert("\"" + mAffairId + "\"", null, getContentValues(classmateInfo));

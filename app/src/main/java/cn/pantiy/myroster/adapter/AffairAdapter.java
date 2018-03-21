@@ -15,6 +15,7 @@ import java.util.List;
 import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
+import cn.pantiy.myroster.utils.TimeUtil;
 
 /**
  * MyRoster
@@ -34,13 +35,13 @@ public class AffairAdapter extends BaseAdapter {
 
     public AffairAdapter(Context context) {
         mContext = context;
-        mAffairList = AffairLab.touch(context).getAffairList();
+        mAffairList = AffairLab.touch(context).queryAffairList();
     }
 
     public AffairAdapter(Context context, boolean isFinish) {
         mContext = context;
         mAffairIsFinish = isFinish;
-        mAffairList = AffairLab.touch(context).getAffairList(isFinish);
+        mAffairList = AffairLab.touch(context).queryAffairList(isFinish);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class AffairAdapter extends BaseAdapter {
         TextView affairName = (TextView) convertView.findViewById(R.id.affairName_tv);
         affairName.setText(affair.getAffairName());
         TextView createTime = (TextView) convertView.findViewById(R.id.affairCreateTime_tv);
-        createTime.setText(new SimpleDateFormat(Affair.DATE_FORMAT).format(affair.getCreateTime()));
+        createTime.setText(TimeUtil.format(affair.getCreateTime()));
         final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.affairIsFinish_cb);
         checkBox.setChecked(affair.isFinish());
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

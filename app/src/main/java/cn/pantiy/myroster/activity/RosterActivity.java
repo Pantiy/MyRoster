@@ -38,7 +38,7 @@ public class RosterActivity extends BaseActivity {
     @Override
     protected void setupAdapter() {
         mRosterLv.setAdapter(new RosterAdapter(this,
-                ClassmateInfoLab.touch(this).getClassmateInfoList()));
+                ClassmateInfoLab.touch(this).queryClassmateInfoList()));
     }
 
     @Override

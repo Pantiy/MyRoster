@@ -32,7 +32,7 @@ public class RosterInAffairLab {
         mSQLiteDatabase = RosterInAffairDatabaseHelper.newInstance(context, mAffairId).getReadableDatabase();
     }
 
-    public List<ClassmateInfo> getRoster() {
+    public List<ClassmateInfo> queryRoster() {
         List<ClassmateInfo> classmateInfoList = new ArrayList<>();
         ClassmateInfoCursorWrapper cursorWrapper = getCursorWrapper();
         if (cursorWrapper.getCount() == 0) {
