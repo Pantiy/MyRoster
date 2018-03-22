@@ -268,9 +268,9 @@ public abstract class AffairFragment extends BaseFragment {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        AffairLab.touch(mContext).deleteForm();
+//                        AffairLab.touch(mContext).deleteForm();
                         ClassmateInfoLab.touch(mContext).deleteForm();
-                        updateAffairList();
+//                        updateAffairList();
                         sRosterImport = SharedPreferencesUtil.putBoolean(kEY_ROSTER_IMPORT, false);
                         chooseExcelFile();
                     }})

@@ -47,7 +47,7 @@ public class ClassmateInfoLab {
         }
         cursorWrapper.moveToFirst();
         while (!cursorWrapper.isAfterLast()) {
-            classmateInfoList.add(cursorWrapper.getClassmateInfo());
+            classmateInfoList.add(cursorWrapper.getClassmateInfo(true));
             cursorWrapper.moveToNext();
         }
         cursorWrapper.close();
@@ -61,7 +61,7 @@ public class ClassmateInfoLab {
             ClassmateInfo classmateInfo = new ClassmateInfo(rowContent[0], rowContent[1]);
             classmateInfoList.add(classmateInfo);
         }
-        Log.i(TAG, "setClassmateInfoList()");
+        Log.i(TAG, "setSelectedClassmateInfoList()");
         saveClassmateInfoList(cleanEmptyInfo(classmateInfoList));
     }
 

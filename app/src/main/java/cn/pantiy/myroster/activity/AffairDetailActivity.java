@@ -5,13 +5,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.nfc.Tag;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +26,7 @@ import cn.pantiy.myroster.adapter.AffairDetailFragmentPagerAdapter;
 import cn.pantiy.myroster.fragment.AffairDetailFragment;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
-import cn.pantiy.myroster.model.ClassmateInfoLab;
+import cn.pantiy.myroster.model.ClassmateInfo;
 import cn.pantiy.myroster.utils.ExcelUtil;
 import cn.pantiy.myroster.utils.PermissionUtil;
 import jxl.write.WriteException;
@@ -43,13 +38,13 @@ import jxl.write.WriteException;
  * Copyright © 2017 All rights Reserved by Pantiy
  */
 
-public class AffairDetailActivity extends BaseActivity implements AffairDetailFragment.OnAffairContentChangedCallback{
+public class AffairDetailActivity extends BaseActivity implements AffairDetailFragment.IncompleteNumChangedCallback {
 
     private static final String TAG = "AffairDetailActivity";
     private static final int REQUEST_WRITE_PERMISSION_CODE = 1;
 
     private static final String EXTRA_AFFAIR_ID = "affairId";
-    private static final String EXTRA_IS_FINISH = "isFinish";
+    private static final String EXTRA_IS_FINISH = "getState";
 
     private boolean mSubtitleVisible;
     private boolean mIsFinish;
@@ -57,6 +52,7 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
 
     private AffairLab mAffairLab;
     private List<Affair> mAffairList;
+    private Affair mAffair;
     private UUID mAffairId;
 
     private ActionBar mActionBar;
@@ -75,10 +71,10 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
         mSubtitleVisible = false;
         mAffairLab = AffairLab.touch(this);
         mAffairId = (UUID) getIntent().getSerializableExtra(EXTRA_AFFAIR_ID);
+        mAffair = mAffairLab.queryAffair((UUID)getIntent().getSerializableExtra(EXTRA_AFFAIR_ID));
         Log.i(TAG, "UUID" + mAffairId.toString());
         mIsFinish = getIntent().getBooleanExtra(EXTRA_IS_FINISH, false);
-        Affair affair = mAffairLab.queryAffair(mAffairId);
-        if (affair.isFinish() != mIsFinish) {
+        if (mAffair.isFinish() != mIsFinish) {
             mIsFinish = !mIsFinish;
         }
         mAffairList = AffairLab.touch(this).queryAffairList(mIsFinish);
@@ -109,6 +105,7 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
             @Override
             public void onPageSelected(int position) {
                 mAffairId = mAffairList.get(position).getId();
+                mAffair = mAffairLab.queryAffair(mAffairId);
                 if (mActionBar != null) {
                     mActionBar.setTitle(mAffairList.get(position).getAffairName());
                     updateSubtitle();
@@ -212,11 +209,10 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
     }
 
     private void displaySubtitle() {
-        int count = ClassmateInfoLab.touch(this).queryClassmateInfoList().size();
+        int count = mAffair.getClassmateInfoList().size();
         int incompleteCount = 0;
-        boolean[] stateArray = mAffairLab.queryAffair(mAffairId).getStateArray();
-        for (boolean state : stateArray) {
-            if (!state) {
+        for (ClassmateInfo classmateInfo : mAffair.getClassmateInfoList()) {
+            if (!classmateInfo.getState()) {
                 incompleteCount++;
             }
         }
@@ -255,7 +251,7 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
 
     private void exportExcel() {
 
-        final Affair affair = AffairLab.touch(this).queryAffair(mAffairId);
+        final Affair affair = mAffair;
 
         new Thread() {
             @Override
@@ -311,7 +307,8 @@ public class AffairDetailActivity extends BaseActivity implements AffairDetailFr
     }
 
     @Override
-    public void onAffairContentChanged() {
+    public void onIncompleteNumChanged() {
+        mAffair = mAffairLab.queryAffair(mAffairId);
         updateSubtitle();
     }
 }

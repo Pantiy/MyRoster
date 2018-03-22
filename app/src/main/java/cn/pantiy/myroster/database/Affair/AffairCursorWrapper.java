@@ -29,12 +29,10 @@ public class AffairCursorWrapper extends CursorWrapper {
         String id = getString(getColumnIndex(Table.ID));
         long createTime = getLong(getColumnIndex(Table.CREATE_TIME));
         String affairName = getString(getColumnIndex(Table.AFFAIR_NAME));
-        String stateArrayString = getString(getColumnIndex(Table.STATE_ARRAY));
         String isFinish = getString(getColumnIndex(Table.IS_FINISH));
 
         Affair affair = new Affair(UUID.fromString(id), affairName);
         affair.setCreateTime(new Date(createTime));
-        affair.setStateArray(affair.parseStateArrayString(stateArrayString));
         affair.setFinish("1".equals(isFinish));
 
         return affair;

@@ -22,11 +22,17 @@ public class ClassmateInfoCursorWrapper extends CursorWrapper {
         super(cursor);
     }
 
-    public ClassmateInfo getClassmateInfo() {
+    public ClassmateInfo getClassmateInfo(boolean invokeByClassmateInfoLab) {
 
         String studentNum = getString(getColumnIndex(ClassmateInfoDatabase.Table.STUDENT_NUM));
         String studentName = getString(getColumnIndex(ClassmateInfoDatabase.Table.STUDENT_NAME));
+        boolean state = false;
+        if (!invokeByClassmateInfoLab) {
+            state = (getInt(getColumnIndex(ClassmateInfoDatabase.Table.STUDENT_STATE)) == 1);
+        }
 
-        return new ClassmateInfo(studentNum, studentName);
+        return new ClassmateInfo(studentNum, studentName, state);
     }
+
+
 }

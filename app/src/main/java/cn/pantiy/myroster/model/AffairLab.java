@@ -94,6 +94,8 @@ public class AffairLab {
     public void deleteAffair(Affair affair) {
         mSQLiteDatabase.delete(AffairDatabase.NAME, Table.ID + "=?",
                 new String[] {affair.getId().toString()});
+//        RosterInAffairLab.touch(mContext, affair.getId().toString()).delete();
+        mContext.deleteDatabase(affair.getId().toString());
     }
 
     public void deleteForm() {
@@ -129,7 +131,7 @@ public class AffairLab {
         contentValues.put(Table.ID, affair.getId().toString());
         contentValues.put(Table.CREATE_TIME, affair.getCreateTime().getTime());
         contentValues.put(Table.AFFAIR_NAME, affair.getAffairName());
-        contentValues.put(Table.STATE_ARRAY, affair.stateArrayToString(affair.getStateArray()));
+//        contentValues.put(Table.STATE_ARRAY, affair.stateArrayToString(affair.getStateArray()));
         contentValues.put(Table.IS_FINISH, affair.isFinish()? "1" : "0");
         return contentValues;
     }

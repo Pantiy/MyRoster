@@ -6,12 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.List;
 
-import cn.pantiy.myroster.database.ClassmateInfo.RosterInAffairDatabaseHelper;
+import cn.pantiy.myroster.database.RosterInAffairDatabaseHelper;
 import cn.pantiy.myroster.model.ClassmateInfo;
 import cn.pantiy.myroster.model.ClassmateInfoLab;
 
 import static cn.pantiy.myroster.database.ClassmateInfo.ClassmateInfoDatabase.Table.STUDENT_NAME;
 import static cn.pantiy.myroster.database.ClassmateInfo.ClassmateInfoDatabase.Table.STUDENT_NUM;
+import static cn.pantiy.myroster.database.ClassmateInfo.ClassmateInfoDatabase.Table.STUDENT_STATE;
 
 /**
  * Created by Pantiy on 2018/1/28.
@@ -43,12 +44,15 @@ public final class RosterInAffairCreator {
         for (ClassmateInfo classmateInfo : classmateInfoList) {
             mSQLiteDatabase.insert("\"" + mAffairId + "\"", null, getContentValues(classmateInfo));
         }
+
+
     }
 
     private ContentValues getContentValues(ClassmateInfo classmateInfo) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(STUDENT_NUM, classmateInfo.getStudentNum());
         contentValues.put(STUDENT_NAME, classmateInfo.getStudentName());
+        contentValues.put(STUDENT_STATE, classmateInfo.getState() ? 1 : 0);
         return contentValues;
     }
 }

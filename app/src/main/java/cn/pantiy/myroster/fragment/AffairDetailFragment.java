@@ -1,7 +1,6 @@
 package cn.pantiy.myroster.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -15,6 +14,7 @@ import cn.pantiy.myroster.adapter.AffairDetailAdapter;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
 import cn.pantiy.myroster.model.ClassmateInfo;
+import cn.pantiy.myroster.model.RosterInAffairLab;
 
 /**
  * MyRoster
@@ -28,7 +28,7 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
     private static final String TAG = "AffairDetailFragment";
 
     private static final String KEY_AFFAIR_ID = "affairId";
-    private static final String KEY_IS_FINISH = "isFinish";
+    private static final String KEY_IS_FINISH = "getState";
 
     private static final int INCOMPLETE = 0;
     private static final int FINISHED = 1;
@@ -43,7 +43,7 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
     private AffairDetailAdapter mIncompleteAdapter;
     private AffairDetailAdapter mFinishedAdapter;
 
-    private OnAffairContentChangedCallback mCallback;
+    private IncompleteNumChangedCallback mCallback;
 
     public static AffairDetailFragment newInstance(UUID affairId, boolean isFinish) {
         AffairDetailFragment affairDetailFragment = new AffairDetailFragment();
@@ -59,7 +59,7 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
         mIsFinish = getArguments().getBoolean(KEY_IS_FINISH);
         UUID affairId = (UUID) getArguments().getSerializable(KEY_AFFAIR_ID);
         mAffair = AffairLab.touch(mContext).queryAffair(affairId);
-        mCallback = (OnAffairContentChangedCallback) getActivity();
+        mCallback = (IncompleteNumChangedCallback) getActivity();
     }
 
     @Override
@@ -101,30 +101,31 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
         });
     }
 
-    private void updateAdapterData(AffairDetailAdapter adapter, List<ClassmateInfo> classmateInfoList,
-                                   boolean[] stateArray) {
-        adapter.updateData(classmateInfoList, stateArray);
-        updateAffair(classmateInfoList, adapter.isFinish());
+    private void updateAdapterData(AffairDetailAdapter adapter, ClassmateInfo changed) {
+        adapter.updateData();
+//        updateAffair(classmateInfoList, adapter.isFinish());
+        RosterInAffairLab.touch(mContext, mAffair.getId().toString()).updateState(changed);
         setAffairDetailAdapter(!adapter.isFinish());
     }
 
     private void updateAffair(List<ClassmateInfo> classmateInfoList, boolean isFinish) {
-        List<ClassmateInfo> allClassmateInfoList = mAffair.getClassmateInfoList();
-        boolean[] allStateArray = mAffair.getStateArray();
-        int index = 0;
-        for (int i = 0; i < allClassmateInfoList.size(); i++) {
-            if (index < classmateInfoList.size()
-                    && allClassmateInfoList.get(i).equals(classmateInfoList.get(index))) {
-                index++;
-            } else {
-                if (allStateArray[i] == isFinish) {
-                    Log.i(TAG, "oldStateArray:" + mAffair.stateArrayToString(allStateArray));
-                    allStateArray[i] = !allStateArray[i];
-                    Log.i(TAG, "newStateArray:" + mAffair.stateArrayToString(allStateArray));
-                }
-            }
-        }
-        AffairLab.touch(mContext).updateAffair(mAffair);
+//        List<ClassmateInfo> allClassmateInfoList = mAffair.getSelectedClassmateInfoList();
+//        boolean[] allStateArray = mAffair.getStateArray();
+//        int index = 0;
+//        for (int i = 0; i < allClassmateInfoList.size(); i++) {
+//            if (index < classmateInfoList.size()
+//                    && allClassmateInfoList.get(i).equals(classmateInfoList.get(index))) {
+//                index++;
+//            } else {
+//                if (allStateArray[i] == isFinish) {
+//                    Log.i(TAG, "oldStateArray:" + mAffair.stateArrayToString(allStateArray));
+//                    allStateArray[i] = !allStateArray[i];
+//                    Log.i(TAG, "newStateArray:" + mAffair.stateArrayToString(allStateArray));
+//                }
+//            }
+//        }
+//        AffairLab.touch(mContext).updateAffair(mAffair);
+        RosterInAffairLab.touch(mContext, mAffair.getId().toString()).updateState(classmateInfoList);
     }
 
     private void switchListView(int current) {
@@ -161,17 +162,16 @@ public class AffairDetailFragment extends BaseFragment implements AffairDetailAd
     }
 
     @Override
-    public void onAffairContentChanged(List<ClassmateInfo> classmateInfoList, boolean[] stateArray,
-                                       boolean isFinish) {
+    public void onAffairContentChanged(ClassmateInfo changed, boolean isFinish) {
         if (isFinish) {
-            updateAdapterData(mFinishedAdapter, classmateInfoList, stateArray);
+            updateAdapterData(mFinishedAdapter, changed);
         } else {
-            updateAdapterData(mIncompleteAdapter, classmateInfoList, stateArray);
+            updateAdapterData(mIncompleteAdapter, changed);
         }
-        mCallback.onAffairContentChanged();
+        mCallback.onIncompleteNumChanged();
     }
 
-    public interface OnAffairContentChangedCallback {
-        void onAffairContentChanged();
+    public interface IncompleteNumChangedCallback {
+        void onIncompleteNumChanged();
     }
 }

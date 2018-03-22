@@ -1,9 +1,7 @@
 package cn.pantiy.myroster.utils;
 
-import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -56,7 +54,6 @@ public final class ExcelUtil {
         }
 
         int rowCount = sheet.getRows();
-//		int colCount = sheet.getColumns();
 
         for (int row = 0; row < rowCount; row++) {
             String[] cells = new String[2];
@@ -84,7 +81,7 @@ public final class ExcelUtil {
         }
 
         List<ClassmateInfo> classmateInfoList = affair.getClassmateInfoList();
-        boolean[] stateArray = affair.getStateArray();
+//        boolean[] stateArray = affair.getStateArray();
 
         WritableWorkbook workbook = Workbook.createWorkbook(excelFile);
         WritableSheet sheet = workbook.createSheet(affair.getAffairName(), 0);
@@ -102,12 +99,14 @@ public final class ExcelUtil {
             sheet.addCell(studentNum);
             studentName = new Label(STUDENT_NAME_COL, i+1, classmateInfo.getStudentName());
             sheet.addCell(studentName);
-        }
-
-        for (int j = 0; j < stateArray.length; j++) {
-            state = new Label(STATE_COL, j+1, stateArray[j] ? "√" : "×");
+            state = new Label(STATE_COL, i+1, classmateInfo.getState() ? "√" : "×");
             sheet.addCell(state);
         }
+
+//        for (int j = 0; j < stateArray.length; j++) {
+//            state = new Label(STATE_COL, j+1, stateArray[j] ? "√" : "×");
+//            sheet.addCell(state);
+//        }
 
         workbook.write();
         workbook.close();
@@ -129,9 +128,5 @@ public final class ExcelUtil {
         private static boolean endWith(String fileName, String end) {
             return fileName.substring(fileName.lastIndexOf(".") + 1).equals(end);
         }
-    }
-
-    public interface ExportAffairFinishedListener {
-        void onExportAffairFinished();
     }
 }

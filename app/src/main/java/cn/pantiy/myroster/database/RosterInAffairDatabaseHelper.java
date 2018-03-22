@@ -1,8 +1,12 @@
-package cn.pantiy.myroster.database.ClassmateInfo;
+package cn.pantiy.myroster.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import cn.pantiy.myroster.database.Affair.AffairDatabase;
+import cn.pantiy.myroster.database.ClassmateInfo.ClassmateInfoDatabase;
+import cn.pantiy.myroster.model.ClassmateInfo;
 
 /**
  * Created by Pantiy on 2018/1/28.
@@ -22,7 +26,8 @@ public class RosterInAffairDatabaseHelper extends SQLiteOpenHelper {
     private static String generateSQL(String fromName) {
         return "create table " + "\"" + fromName + "\"" + "(" +
                 ClassmateInfoDatabase.Table.STUDENT_NUM + "," +
-                ClassmateInfoDatabase.Table.STUDENT_NAME + ")";
+                ClassmateInfoDatabase.Table.STUDENT_NAME + "," +
+                ClassmateInfoDatabase.Table.STUDENT_STATE + ")";
     }
 
     private RosterInAffairDatabaseHelper(Context context) {

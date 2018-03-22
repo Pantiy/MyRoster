@@ -31,7 +31,7 @@ public class Affair {
     public Affair(UUID id, String affairName) {
         mId = id;
         setAffairName(affairName);
-        setClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).queryClassmateInfoList());
+//        setSelectedClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).queryClassmateInfoList());
         List<ClassmateInfo> classmateInfoList =
                 RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).queryRoster();
         if (classmateInfoList == null) {
@@ -72,17 +72,17 @@ public class Affair {
         return mStateArray;
     }
 
-    public void setStateArray(boolean[] stateArray) {
-        mStateArray = stateArray;
-    }
-
-    public boolean[] parseStateArrayString(String stateArrayString) {
-        boolean[] stateArray = new boolean[stateArrayString.length()];
-        for (int i = 0; i < stateArray.length; i++) {
-            stateArray[i] = stateArrayString.charAt(i) == '1';
-        }
-        return stateArray;
-    }
+//    public void setStateArray(boolean[] stateArray) {
+//        mStateArray = stateArray;
+//    }
+//
+//    public boolean[] parseStateArrayString(String stateArrayString) {
+//        boolean[] stateArray = new boolean[stateArrayString.length()];
+//        for (int i = 0; i < stateArray.length; i++) {
+//            stateArray[i] = stateArrayString.charAt(i) == '1';
+//        }
+//        return stateArray;
+//    }
 
     public String stateArrayToString(boolean[] stateArray) {
         String stateArrayString = "";

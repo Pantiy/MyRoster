@@ -26,7 +26,7 @@
     <string name="empty">空</string>
     <string name="input_affair_name">输入事务名称</string>
     <string name="message_delete_affair">是否删除该事务</string>
-    <string name="message_re_import_roster">这将清空所有数据</string>
+    <string name="message_re_import_roster">这将删除原有名单</string>
 
     <string name="display_subtitle_count">显示人数</string>
     <string name="display_roster">显示名单</string>

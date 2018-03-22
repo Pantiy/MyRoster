@@ -20,5 +20,6 @@ public final class ClassmateInfoDatabase {
     public static final class Table {
         public static final String STUDENT_NUM = "student_num";
         public static final String STUDENT_NAME = "student_name";
+        public static final String STUDENT_STATE = "student_state";
     }
 }

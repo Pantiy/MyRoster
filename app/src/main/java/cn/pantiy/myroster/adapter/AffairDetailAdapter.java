@@ -16,7 +16,6 @@ import java.util.List;
 import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.ClassmateInfo;
-import cn.pantiy.myroster.model.RosterInAffairLab;
 
 /**
  * MyRoster
@@ -33,33 +32,33 @@ public class AffairDetailAdapter extends BaseAdapter {
 
     private Context mContext;
     private Affair mAffair;
-    private List<ClassmateInfo> mClassmateInfoList;
-    private boolean[] mStateArray;
+    private List<ClassmateInfo> mSelectedClassmateInfoList;
+//    private boolean[] mStateArray;
 
     private OnAffairContentChangeListener mOnAffairContentChangeListener;
 
     private AffairDetailAdapter(Context context, Affair affair) {
         mContext = context;
         mAffair = affair;
-        mClassmateInfoList = affair.getClassmateInfoList();
-        //mClassmateInfoList = RosterInAffairLab.touch(context, affair.getId().toString()).getRoster();
-        mStateArray = affair.getStateArray();
+//        mSelectedClassmateInfoList = new ArrayList<>();
+        //mSelectedClassmateInfoList = RosterInAffairLab.touch(context, affair.getId().toString()).getRoster();
+//        mStateArray = affair.getStateArray();
     }
 
     public AffairDetailAdapter(Context context, Affair affair, boolean isFinish) {
         this(context, affair);
         mIsFinish = isFinish;
-        setPrescribedAffairDetail(mIsFinish);
+        mSelectedClassmateInfoList = selectClassmateInfo(affair.getClassmateInfoList(), isFinish);
     }
 
     @Override
     public int getCount() {
-        return mClassmateInfoList.size();
+        return mSelectedClassmateInfoList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mClassmateInfoList.get(position);
+        return mSelectedClassmateInfoList.get(position);
     }
 
     @Override
@@ -72,30 +71,29 @@ public class AffairDetailAdapter extends BaseAdapter {
         convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_for_affair_detail,
                 parent, false);
         TextView studentNum = (TextView) convertView.findViewById(R.id.studentNum_tv);
-        studentNum.setText(mClassmateInfoList.get(position).getStudentNum());
+        studentNum.setText(mSelectedClassmateInfoList.get(position).getStudentNum());
         TextView studentName = (TextView) convertView.findViewById(R.id.studentName_tv);
-        studentName.setText(mClassmateInfoList.get(position).getStudentName());
+        studentName.setText(mSelectedClassmateInfoList.get(position).getStudentName());
         final CheckBox state = (CheckBox) convertView.findViewById(R.id.state_cb);
-        state.setChecked(mStateArray[position]);
+        state.setChecked(mSelectedClassmateInfoList.get(position).getState());
         Log.i(TAG, mAffair.isFinish() + "");
         if (!mAffair.isFinish()) {
             state.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    state.setClickable(false);
-                    mStateArray[position] = isChecked;
-                    mAffair.setStateArray(mStateArray);
-                    List<ClassmateInfo> classmateInfoList = new ArrayList<>();
-                    boolean[] stateArray = new boolean[mStateArray.length - 1];
-                    for (int i = 0, index = 0; i < mStateArray.length; i++) {
-                        if (mStateArray[i] != isChecked) {
-                            stateArray[index] = mStateArray[i];
-                            classmateInfoList.add(mClassmateInfoList.get(i));
-                            index++;
-                        }
-                    }
-                    mOnAffairContentChangeListener.onAffairContentChanged(classmateInfoList, stateArray,
-                            mIsFinish);
+                    mSelectedClassmateInfoList.get(position).setState(isChecked);
+//                    mStateArray[position] = isChecked;
+//                    mAffair.setStateArray(mStateArray);
+//                    List<ClassmateInfo> classmateInfoList = new ArrayList<>();
+//                    boolean[] stateArray = new boolean[mStateArray.length - 1];
+//                    for (int i = 0, index = 0; i < mStateArray.length; i++) {
+//                        if (mStateArray[i] != isChecked) {
+//                            stateArray[index] = mStateArray[i];
+//                            classmateInfoList.add(mSelectedClassmateInfoList.get(i));
+//                            index++;
+//                        }
+//                    }
+                    mOnAffairContentChangeListener.onAffairContentChanged(mSelectedClassmateInfoList.remove(position), mIsFinish);
                 }
             });
         } else {
@@ -104,50 +102,61 @@ public class AffairDetailAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void setPrescribedAffairDetail(boolean isFinish) {
-        int count = 0;
-        for (boolean b : mStateArray) {
-            if (b == isFinish) {
-                count++;
-            }
-        }
-        List<ClassmateInfo> classmateInfoList = new ArrayList<>();
-        boolean[] stateArray = new boolean[count];
-        for (int n = 0, index = 0; index < count; n++) {
-            if (mStateArray[n] == isFinish) {
-                classmateInfoList.add(mClassmateInfoList.get(n));
-                stateArray[index] = isFinish;
-                index++;
-            }
-        }
-        mClassmateInfoList = classmateInfoList;
-        mStateArray = stateArray;
-        Log.i(TAG, "prescribedStateArray(" + isFinish + "):" + mAffair.stateArrayToString(stateArray));
-        mAffair = new Affair(mAffair.getId(), mAffair.getAffairName(), mAffair.isFinish());
-        mAffair.setClassmateInfoList(classmateInfoList);
-        mAffair.setStateArray(stateArray);
-    }
+//    private void setPrescribedAffairDetail(boolean isFinish) {
+//        int count = 0;
+//        for (boolean b : mStateArray) {
+//            if (b == isFinish) {
+//                count++;
+//            }
+//        }
+//        List<ClassmateInfo> classmateInfoList = new ArrayList<>();
+//        boolean[] stateArray = new boolean[count];
+//        for (int n = 0, index = 0; index < count; n++) {
+//            if (mStateArray[n] == isFinish) {
+//                classmateInfoList.add(mSelectedClassmateInfoList.get(n));
+//                stateArray[index] = isFinish;
+//                index++;
+//            }
+//        }
+//        mSelectedClassmateInfoList = classmateInfoList;
+////        mStateArray = stateArray;
+//        Log.i(TAG, "prescribedStateArray(" + isFinish + "):" + mAffair.stateArrayToString(stateArray));
+//        mAffair = new Affair(mAffair.getId(), mAffair.getAffairName(), mAffair.isFinish());
+//        mAffair.setSelectedClassmateInfoList(classmateInfoList);
+//        mAffair.setStateArray(stateArray);
+//    }
 
-    public void updateData(List<ClassmateInfo> classmateInfoList, boolean[] stateArray) {
-        setClassmateInfoList(classmateInfoList);
-        setStateArray(stateArray);
+    public void updateData() {
+//        setSelectedClassmateInfoList(selectClassmateInfo(classmateInfoList, mIsFinish));
+
+//        setStateArray(stateArray);
         this.notifyDataSetChanged();
     }
 
-    public List<ClassmateInfo> getClassmateInfoList() {
-        return mClassmateInfoList;
+    public List<ClassmateInfo> getSelectedClassmateInfoList() {
+        return mSelectedClassmateInfoList;
     }
 
-    public void setClassmateInfoList(List<ClassmateInfo> classmateInfoList) {
-        mClassmateInfoList = classmateInfoList;
+    public void setSelectedClassmateInfoList(List<ClassmateInfo> selectedClassmateInfoList) {
+        mSelectedClassmateInfoList = selectedClassmateInfoList;
     }
 
-    public boolean[] getStateArray() {
-        return mStateArray;
-    }
+//    public boolean[] getStateArray() {
+//        return mStateArray;
+//    }
 
-    public void setStateArray(boolean[] stateArray) {
-        mStateArray = stateArray;
+//    public void setStateArray(boolean[] stateArray) {
+//        mStateArray = stateArray;
+//    }
+
+    private List<ClassmateInfo> selectClassmateInfo(List<ClassmateInfo> classmateInfoList, boolean state) {
+        List<ClassmateInfo> selectedClassmateInfoList = new ArrayList<>();
+        for (ClassmateInfo classmateInfo : classmateInfoList) {
+            if (classmateInfo.getState() == state) {
+                selectedClassmateInfoList.add(classmateInfo);
+            }
+        }
+        return selectedClassmateInfoList;
     }
 
     public boolean isFinish() {
@@ -159,7 +168,6 @@ public class AffairDetailAdapter extends BaseAdapter {
     }
 
     public interface OnAffairContentChangeListener {
-        void onAffairContentChanged(List<ClassmateInfo> classmateInfoList, boolean[] stateArray,
-                                    boolean isFinish);
+        void onAffairContentChanged(ClassmateInfo changed, boolean isFinish);
     }
 }
