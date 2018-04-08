@@ -9,22 +9,22 @@
         android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:gravity="center"
+        android:layout_marginTop="10dp"
         android:background="@drawable/radio_group_stroke"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/incomplete_radioBtn"
-            style="@style/RadioButtonOnlyShowText"
-            android:checked="true"
+            style="@style/RadioButtonOnlyDisplayText"
             android:background="@drawable/incomplete_radio_button_selector"
+            android:checked="true"
             android:text="@string/incomplete"/>
 
         <RadioButton
             android:id="@+id/finished_radioBtn"
-            style="@style/RadioButtonOnlyShowText"
+            style="@style/RadioButtonOnlyDisplayText"
             android:background="@drawable/finished_radio_button_selector"
             android:text="@string/finished"/>
 
@@ -37,11 +37,13 @@
 
         <ListView
             android:id="@+id/incomplete_lv"
+            style="@style/DividerWithInterval"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
         <ListView
             android:id="@+id/finished_lv"
+            style="@style/DividerWithInterval"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"/>

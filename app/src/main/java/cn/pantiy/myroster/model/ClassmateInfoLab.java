@@ -61,7 +61,7 @@ public class ClassmateInfoLab {
             ClassmateInfo classmateInfo = new ClassmateInfo(rowContent[0], rowContent[1]);
             classmateInfoList.add(classmateInfo);
         }
-        Log.i(TAG, "setSelectedClassmateInfoList()");
+        Log.i(TAG, "setClassmateInfoList()");
         saveClassmateInfoList(cleanEmptyInfo(classmateInfoList));
     }
 

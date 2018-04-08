@@ -16,6 +16,7 @@ import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.AffairLab;
 import cn.pantiy.myroster.utils.TimeUtil;
+import cn.refactor.library.SmoothCheckBox;
 
 /**
  * MyRoster
@@ -64,16 +65,26 @@ public class AffairAdapter extends BaseAdapter {
         convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_for_affair,
                 parent,false);
         final Affair affair = mAffairList.get(position);
-        TextView affairName = (TextView) convertView.findViewById(R.id.affairName_tv);
+        TextView affairName = convertView.findViewById(R.id.affairName_tv);
         affairName.setText(affair.getAffairName());
-        TextView createTime = (TextView) convertView.findViewById(R.id.affairCreateTime_tv);
+        TextView createTime = convertView.findViewById(R.id.affairCreateTime_tv);
         createTime.setText(TimeUtil.format(affair.getCreateTime()));
-        final CheckBox checkBox = (CheckBox) convertView.findViewById(R.id.affairIsFinish_cb);
-        checkBox.setChecked(affair.isFinish());
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//        final CheckBox checkBox = convertView.findViewById(R.id.affairIsFinish_cb);
+//        checkBox.setChecked(affair.isFinish());
+//        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                checkBox.setClickable(false);
+//                affair.setFinish(isChecked);
+//                AffairLab.touch(mContext).updateAffair(affair);
+//                mOnAffairListChangeListener.onAffairListChanged();
+//            }
+//        });
+        final SmoothCheckBox smoothCheckBox = convertView.findViewById(R.id.affairIsFinish_checkBox);
+        smoothCheckBox.setChecked(affair.isFinish());
+        smoothCheckBox.setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                checkBox.setClickable(false);
+            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
                 affair.setFinish(isChecked);
                 AffairLab.touch(mContext).updateAffair(affair);
                 mOnAffairListChangeListener.onAffairListChanged();

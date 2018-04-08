@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.List;
 
 import cn.pantiy.myroster.fragment.AffairDetailFragment;
+import cn.pantiy.myroster.fragment.CompleteAffairDetailFragment;
+import cn.pantiy.myroster.fragment.IncompleteAffairDetailFragment;
 import cn.pantiy.myroster.model.Affair;
 
 /**
@@ -34,7 +36,11 @@ public class AffairDetailFragmentPagerAdapter extends FragmentStatePagerAdapter 
 
     @Override
     public Fragment getItem(int i) {
-        return AffairDetailFragment.newInstance(mAffairList.get(i).getId(), mIsFinish);
+        if (mAffairList.get(i).isFinish()) {
+            return CompleteAffairDetailFragment.newInstance(mAffairList.get(i).getId());
+        } else {
+            return IncompleteAffairDetailFragment.newInstance(mAffairList.get(i).getId());
+        }
     }
 
     @Override

@@ -1,21 +1,18 @@
 package cn.pantiy.myroster.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
-
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-
 import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.model.Affair;
 import cn.pantiy.myroster.model.ClassmateInfo;
+import cn.refactor.library.SmoothCheckBox;
 
 /**
  * MyRoster
@@ -28,37 +25,40 @@ public class AffairDetailAdapter extends BaseAdapter {
 
     private static final String TAG = "AffairDetailAdapter";
 
-    private boolean mIsFinish;
+    private boolean mAffairIsFinished;
 
     private Context mContext;
-    private Affair mAffair;
-    private List<ClassmateInfo> mSelectedClassmateInfoList;
-//    private boolean[] mStateArray;
 
-    private OnAffairContentChangeListener mOnAffairContentChangeListener;
+    private Affair mAffair;
+    private List<ClassmateInfo> mClassmateInfoList;
+    private List<ClassmateInfo> mChangedClassmateInfoList;
+    private boolean[] mChangedMarks;
 
     private AffairDetailAdapter(Context context, Affair affair) {
         mContext = context;
         mAffair = affair;
-//        mSelectedClassmateInfoList = new ArrayList<>();
-        //mSelectedClassmateInfoList = RosterInAffairLab.touch(context, affair.getId().toString()).getRoster();
-//        mStateArray = affair.getStateArray();
+        mAffairIsFinished = mAffair.isFinish();
     }
 
     public AffairDetailAdapter(Context context, Affair affair, boolean isFinish) {
         this(context, affair);
-        mIsFinish = isFinish;
-        mSelectedClassmateInfoList = selectClassmateInfo(affair.getClassmateInfoList(), isFinish);
+        if (mAffairIsFinished) {
+            mClassmateInfoList = selectClassmateInfo(affair.getClassmateInfoList(), isFinish);
+        } else {
+            mClassmateInfoList = mAffair.getClassmateInfoList();
+            mChangedClassmateInfoList = new LinkedList<>();
+            mChangedMarks = new boolean[mClassmateInfoList.size()];
+        }
     }
 
     @Override
     public int getCount() {
-        return mSelectedClassmateInfoList.size();
+        return mClassmateInfoList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mSelectedClassmateInfoList.get(position);
+        return mClassmateInfoList.get(position);
     }
 
     @Override
@@ -70,84 +70,40 @@ public class AffairDetailAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
         convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item_for_affair_detail,
                 parent, false);
-        TextView studentNum = (TextView) convertView.findViewById(R.id.studentNum_tv);
-        studentNum.setText(mSelectedClassmateInfoList.get(position).getStudentNum());
-        TextView studentName = (TextView) convertView.findViewById(R.id.studentName_tv);
-        studentName.setText(mSelectedClassmateInfoList.get(position).getStudentName());
-        final CheckBox state = (CheckBox) convertView.findViewById(R.id.state_cb);
-        state.setChecked(mSelectedClassmateInfoList.get(position).getState());
-        Log.i(TAG, mAffair.isFinish() + "");
-        if (!mAffair.isFinish()) {
-            state.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        TextView studentNum = convertView.findViewById(R.id.studentNum_tv);
+        studentNum.setText(mClassmateInfoList.get(position).getStudentNum());
+        TextView studentName = convertView.findViewById(R.id.studentName_tv);
+        studentName.setText(mClassmateInfoList.get(position).getStudentName());
+        SmoothCheckBox state = convertView.findViewById(R.id.state_checkBox);
+        state.setChecked(mClassmateInfoList.get(position).getState());
+        if (mAffairIsFinished) {
+            state.setClickable(false);
+        } else {
+            state.setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    mSelectedClassmateInfoList.get(position).setState(isChecked);
-//                    mStateArray[position] = isChecked;
-//                    mAffair.setStateArray(mStateArray);
-//                    List<ClassmateInfo> classmateInfoList = new ArrayList<>();
-//                    boolean[] stateArray = new boolean[mStateArray.length - 1];
-//                    for (int i = 0, index = 0; i < mStateArray.length; i++) {
-//                        if (mStateArray[i] != isChecked) {
-//                            stateArray[index] = mStateArray[i];
-//                            classmateInfoList.add(mSelectedClassmateInfoList.get(i));
-//                            index++;
-//                        }
-//                    }
-                    mOnAffairContentChangeListener.onAffairContentChanged(mSelectedClassmateInfoList.remove(position), mIsFinish);
+                public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
+                    mClassmateInfoList.get(position).setState(isChecked);
+                    if (!mChangedMarks[position]) {
+                        mChangedClassmateInfoList.add(mClassmateInfoList.get(position));
+                    } else {
+                        mChangedClassmateInfoList.remove(mClassmateInfoList.get(position));
+                    }
+                    mChangedMarks[position] = !mChangedMarks[position];
                 }
             });
-        } else {
-            state.setClickable(false);
         }
+
         return convertView;
     }
 
-//    private void setPrescribedAffairDetail(boolean isFinish) {
-//        int count = 0;
-//        for (boolean b : mStateArray) {
-//            if (b == isFinish) {
-//                count++;
-//            }
-//        }
-//        List<ClassmateInfo> classmateInfoList = new ArrayList<>();
-//        boolean[] stateArray = new boolean[count];
-//        for (int n = 0, index = 0; index < count; n++) {
-//            if (mStateArray[n] == isFinish) {
-//                classmateInfoList.add(mSelectedClassmateInfoList.get(n));
-//                stateArray[index] = isFinish;
-//                index++;
-//            }
-//        }
-//        mSelectedClassmateInfoList = classmateInfoList;
-////        mStateArray = stateArray;
-//        Log.i(TAG, "prescribedStateArray(" + isFinish + "):" + mAffair.stateArrayToString(stateArray));
-//        mAffair = new Affair(mAffair.getId(), mAffair.getAffairName(), mAffair.isFinish());
-//        mAffair.setSelectedClassmateInfoList(classmateInfoList);
-//        mAffair.setStateArray(stateArray);
-//    }
-
-    public void updateData() {
-//        setSelectedClassmateInfoList(selectClassmateInfo(classmateInfoList, mIsFinish));
-
-//        setStateArray(stateArray);
-        this.notifyDataSetChanged();
+    public List<ClassmateInfo> getChangedClassmateInfoList() {
+        return mChangedClassmateInfoList;
     }
 
-    public List<ClassmateInfo> getSelectedClassmateInfoList() {
-        return mSelectedClassmateInfoList;
+    public void clearChanged() {
+        mChangedClassmateInfoList = new LinkedList<>();
+        mChangedMarks = new boolean[mClassmateInfoList.size()];
     }
-
-    public void setSelectedClassmateInfoList(List<ClassmateInfo> selectedClassmateInfoList) {
-        mSelectedClassmateInfoList = selectedClassmateInfoList;
-    }
-
-//    public boolean[] getStateArray() {
-//        return mStateArray;
-//    }
-
-//    public void setStateArray(boolean[] stateArray) {
-//        mStateArray = stateArray;
-//    }
 
     private List<ClassmateInfo> selectClassmateInfo(List<ClassmateInfo> classmateInfoList, boolean state) {
         List<ClassmateInfo> selectedClassmateInfoList = new ArrayList<>();
@@ -159,15 +115,4 @@ public class AffairDetailAdapter extends BaseAdapter {
         return selectedClassmateInfoList;
     }
 
-    public boolean isFinish() {
-        return mIsFinish;
-    }
-
-    public void setOnAffairContentChangeListener(OnAffairContentChangeListener listener) {
-        mOnAffairContentChangeListener = listener;
-    }
-
-    public interface OnAffairContentChangeListener {
-        void onAffairContentChanged(ClassmateInfo changed, boolean isFinish);
-    }
 }

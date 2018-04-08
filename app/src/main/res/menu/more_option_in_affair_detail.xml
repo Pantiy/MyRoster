@@ -4,10 +4,10 @@
     <item android:id="@+id/displaySubtitle"
         android:title="@string/display_subtitle_count"/>
 
-    <item android:id="@+id/deleteAffair"
-          android:title="@string/delete_affair"/>
-
     <item android:id="@+id/exportAffair"
           android:title="@string/export_affair"/>
+
+    <item android:id="@+id/deleteAffair"
+          android:title="@string/delete_affair"/>
 
 </menu>

@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="55dp"
-              android:gravity="center_vertical"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:descendantFocusability="blocksDescendants"
+              android:gravity="center_vertical"
               android:orientation="horizontal">
 
     <LinearLayout
@@ -14,27 +15,36 @@
 
         <TextView
             android:id="@+id/affairName_tv"
-            android:layout_marginStart="15dp"
-            android:textSize="18sp"
-            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="1.6"/>
+            android:layout_marginStart="15dp"
+            android:layout_weight="1.6"
+            android:gravity="center"
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/affairCreateTime_tv"
-            android:layout_marginStart="15dp"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_marginStart="15dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:layout_weight="1"/>
+            android:layout_marginBottom="3dp"/>
 
     </LinearLayout>
 
     <CheckBox
+        android:visibility="gone"
         android:id="@+id/affairIsFinish_cb"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="5dp"/>
+
+    <cn.refactor.library.SmoothCheckBox
+        android:id="@+id/affairIsFinish_checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:color_checked="#3cc25d"/>
 
 </LinearLayout>

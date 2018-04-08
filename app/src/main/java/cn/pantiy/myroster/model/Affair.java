@@ -31,7 +31,7 @@ public class Affair {
     public Affair(UUID id, String affairName) {
         mId = id;
         setAffairName(affairName);
-//        setSelectedClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).queryClassmateInfoList());
+//        setClassmateInfoList(ClassmateInfoLab.touch(MyApplication.getContext()).queryClassmateInfoList());
         List<ClassmateInfo> classmateInfoList =
                 RosterInAffairLab.touch(MyApplication.getContext(), mId.toString()).queryRoster();
         if (classmateInfoList == null) {

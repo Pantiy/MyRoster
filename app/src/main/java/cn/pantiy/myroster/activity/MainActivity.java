@@ -12,7 +12,7 @@ import cn.pantiy.myroster.R;
 import cn.pantiy.myroster.adapter.AffairFragmentPagerAdapter;
 import cn.pantiy.myroster.fragment.AffairFragment;
 import cn.pantiy.myroster.fragment.BaseFragment;
-import cn.pantiy.myroster.fragment.FinishedAffairFragment;
+import cn.pantiy.myroster.fragment.CompleteAffairFragment;
 import cn.pantiy.myroster.fragment.IncompleteAffairFragment;
 
 /**
@@ -41,8 +41,8 @@ public class MainActivity extends BaseActivity implements AffairFragment.OnCreat
         mFragmentList = new ArrayList<>();
         IncompleteAffairFragment incompleteAffairFragment = IncompleteAffairFragment.newInstance();
         mFragmentList.add(INCOMPLETE, incompleteAffairFragment);
-        FinishedAffairFragment finishedAffairFragment = FinishedAffairFragment.newInstance();
-        mFragmentList.add(FINISHED, finishedAffairFragment);
+        CompleteAffairFragment completeAffairFragment = CompleteAffairFragment.newInstance();
+        mFragmentList.add(FINISHED, completeAffairFragment);
     }
 
     @Override

@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -173,7 +172,7 @@ public abstract class AffairFragment extends BaseFragment {
         mAffairAdapter.setOnAffairListChangeListener(new AffairAdapter.OnAffairListChangeListener() {
             @Override
             public void onAffairListChanged() {
-                FinishedAffairFragment.newInstance().updateAffairList();
+                CompleteAffairFragment.newInstance().updateAffairList();
                 IncompleteAffairFragment.newInstance().updateAffairList();
             }
         });
