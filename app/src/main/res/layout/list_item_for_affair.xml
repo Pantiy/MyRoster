@@ -45,6 +45,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        app:color_checked="#3cc25d"/>
+        app:color_checked="@color/colorChecked"/>
 
 </LinearLayout>

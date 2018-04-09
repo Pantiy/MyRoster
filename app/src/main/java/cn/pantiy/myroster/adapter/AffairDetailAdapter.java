@@ -101,7 +101,7 @@ public class AffairDetailAdapter extends BaseAdapter {
     }
 
     public void clearChanged() {
-        mChangedClassmateInfoList = new LinkedList<>();
+        mChangedClassmateInfoList.clear();
         mChangedMarks = new boolean[mClassmateInfoList.size()];
     }
 
